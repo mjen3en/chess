@@ -16,7 +16,7 @@ public class ChessMove {
      * @return ChessPosition of starting location
      */
     public ChessPosition getStartPosition() {
-        throw new RuntimeException("Not implemented");
+        return new chess.ChessPosition();
     }
 
     /**
@@ -36,3 +36,10 @@ public class ChessMove {
         throw new RuntimeException("Not implemented");
     }
 }
+
+    @Override public String toString(){
+
+        return this.getStartPosition
+
+    }
+
