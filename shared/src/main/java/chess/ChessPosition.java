@@ -31,4 +31,12 @@ public class ChessPosition {
     public int getColumn() {
         return col;
     }
+
+    @Override public String toString(){
+        String r = Integer.toString(row);
+        String c = Integer.toString(col);
+        return "(" + r +"," + c + ")";
+    }
 }
+
+
