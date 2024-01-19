@@ -3,14 +3,32 @@ package chess;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Objects;
 
 //Generates valid moves based on pieceType and position
-public class PieceMovesCalculator{
+public class PieceMovesCalculator {
+
+    /*private final ChessGame.TeamColor pieceColor;
+    private final ChessPiece.PieceType type;*/
+
+    private final ChessBoard myBoard;
+
+    private final ChessPosition thisPosition;
+
 
 
     /*public Collection pieceMoves(ChessBoard board, ChessPosition myPosition){
 
     }*/
+
+    public PieceMovesCalculator(ChessBoard board, ChessPosition myPosition){
+        /*pieceColor = board.getPiece(myPosition).getTeamColor();
+        type = board.getPiece(myPosition).getPieceType();*/
+        myBoard = board;
+        thisPosition = myPosition;
+
+
+    }
 
 
     public Collection BishopMovesCalculator(ChessBoard board, ChessPosition myPosition){
@@ -82,10 +100,33 @@ public class PieceMovesCalculator{
 
 
         return validMoves;
+
     }
 
+   /* public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ChessPiece that = (ChessPiece) o;
+        return pieceColor == that.getTeamColor() && type == that.getPieceType();
+    }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(pieceColor, type);
+    }*/
 
+   /*@Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        PieceMovesCalculator that = (PieceMovesCalculator) o;
+        return Objects.equals(myBoard, that.myBoard) && Objects.equals(thisPosition, that.thisPosition);
+    }*/
+
+    /*@Override
+    public int hashCode(ChessMove added) {
+        return Objects.hash(added.getStartPosition(), added.getEndPosition(), added.getPromotionPiece());
+    }*/
 }
 
 

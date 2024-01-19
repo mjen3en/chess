@@ -3,6 +3,7 @@ package chess;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Objects;
 
 /**
  * Represents a single chess piece
@@ -36,7 +37,7 @@ public class ChessPiece {
      * @return Which team this chess piece belongs to
      */
     public ChessGame.TeamColor getTeamColor() {
-        throw new RuntimeException("Not implemented");
+        return pieceColor;
     }
 
     /**
@@ -54,7 +55,7 @@ public class ChessPiece {
      * @return Collection of valid moves
      */
     public Collection pieceMoves(ChessBoard board, ChessPosition myPosition) {
-        PieceMovesCalculator moves = new PieceMovesCalculator();
+        PieceMovesCalculator moves = new PieceMovesCalculator(board, myPosition);
         var validMoves = new HashSet<ChessMove>();
         if (type == PieceType.BISHOP) {
             return moves.BishopMovesCalculator(board, myPosition);
@@ -65,6 +66,19 @@ public class ChessPiece {
 
     }
 
+
+   /* @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ChessPiece that = (ChessPiece) o;
+        return pieceColor == that.pieceColor && type == that.type;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(pieceColor, type);
+    }*/
 }
 
 
