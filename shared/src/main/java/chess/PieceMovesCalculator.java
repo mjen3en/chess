@@ -255,6 +255,12 @@ public class PieceMovesCalculator {
         int rowAdjusted = myPosition.getRow() + 1;
         int colAdjusted = myPosition.getColumn() + 1;
 
+        ChessPiece promoPiece = null;
+        if(rowAdjusted +i == 8 || rowAdjusted +i == 1){
+            promoPiece =
+
+        }
+
         if (rowAdjusted+i != 9 && rowAdjusted + i != 0){ //checks space in front
             ChessPosition newPosition = new ChessPosition(rowAdjusted + i , colAdjusted);
             if (board.getPiece(newPosition) == null){
