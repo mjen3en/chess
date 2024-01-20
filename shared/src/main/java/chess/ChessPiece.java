@@ -56,10 +56,12 @@ public class ChessPiece {
      */
     public Collection pieceMoves(ChessBoard board, ChessPosition myPosition) {
         PieceMovesCalculator moves = new PieceMovesCalculator(board, myPosition);
-        var validMoves = new HashSet<ChessMove>();
         if (type == PieceType.BISHOP) {
             return moves.BishopMovesCalculator(board, myPosition);
 
+        }
+        if (type == PieceType.KING){
+            return moves.KingMovesCalculator(board, myPosition);
         }
         return new ArrayList<>();
 
