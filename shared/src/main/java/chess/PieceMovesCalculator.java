@@ -246,6 +246,37 @@ public class PieceMovesCalculator {
         return null;
     }
 
+    public Collection PawnMovesCalculator(ChessBoard board, ChessPosition myPosition){
+        var validMoves = new HashSet<ChessMove>();
+        int i = 1;
+        if (board.getPiece(myPosition).getTeamColor() == ChessGame.TeamColor.BLACK){
+            i = -1;
+        }
+        int rowAdjusted = myPosition.getRow() + 1;
+        int colAdjusted = myPosition.getColumn() + 1;
+
+        if (rowAdjusted+i != 9 && rowAdjusted + i != 0){ //checks space in front
+            ChessPosition newPosition = new ChessPosition(rowAdjusted + i , colAdjusted);
+            if (board.getPiece(newPosition) == null){
+                validMoves.add(new ChessMove(myPosition, newPosition, null));
+
+
+            }
+            ChessPosition rightDiag = new ChessPosition(rowAdjusted + i, colAdjusted + 1);
+            if (colAdjusted +1 != 9 && board.getPiece(rightDiag) != null && board.getPiece(newPosition).getTeamColor() != board.getPiece(myPosition).getTeamColor()){
+                validMoves.add(new ChessMove(myPosition, newPosition, null));
+            }
+            ChessPosition leftDiag = new ChessPosition(rowAdjusted + i, colAdjusted - 1);
+            if (colAdjusted -1 != 9 && board.getPiece(leftDiag) != null && board.getPiece(newPosition).getTeamColor() != board.getPiece(myPosition).getTeamColor()){
+                validMoves.add(new ChessMove(myPosition, newPosition, null));
+            }
+        }
+
+
+
+        return validMoves;
+
+    }
 
 }
 

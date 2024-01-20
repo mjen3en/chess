@@ -68,6 +68,10 @@ public class ChessPiece {
         if (type == PieceType.KNIGHT){
             return moves.KnightMovesCalculator(board, myPosition);
         }
+
+        if (type == PieceType.PAWN){
+            return moves.PawnMovesCalculator(board, myPosition);
+        }
         return new ArrayList<>();
 
 
