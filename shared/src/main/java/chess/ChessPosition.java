@@ -35,8 +35,8 @@ public class ChessPosition {
     }
 
     @Override public String toString(){
-        String r = Integer.toString(row);
-        String c = Integer.toString(col);
+        String r = Integer.toString(row + 1);
+        String c = Integer.toString(col + 1);
         return "(" + r +"," + c + ")";
     }
 
