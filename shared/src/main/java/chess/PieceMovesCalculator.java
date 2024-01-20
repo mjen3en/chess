@@ -237,7 +237,7 @@ public class PieceMovesCalculator {
     }
 
     private ChessMove generateKnightMove(int x, int y, int rowAdjusted, int colAdjusted, ChessBoard board, ChessPosition myPosition){
-        if (!(rowAdjusted + x > 8 || rowAdjusted + x < 1 || colAdjusted + y > 8 || colAdjusted < 1)){
+        if (!(rowAdjusted + x > 8 || rowAdjusted + x < 1 || colAdjusted + y > 8 || colAdjusted + y < 1)){
             ChessPosition newPosition = new ChessPosition(rowAdjusted + x, colAdjusted + y);
             if (board.getPiece(newPosition) == null || board.getPiece(newPosition).getTeamColor() != board.getPiece(myPosition).getTeamColor()){
                 return new ChessMove(myPosition, newPosition, null);
