@@ -38,76 +38,76 @@ public class PieceMovesCalculator {
         var validMoves = new HashSet<ChessMove>();
         //ChessPosition checkMyPosition = new ChessPosition(myPosition.getRow() -1, myPosition.getColumn()-1);
         //row increasing, column increasing
-        for (int i = 1; i < 7; i++){
-            if(myPosition.getRow()+i <= 0 || myPosition.getRow()+i > 8 || myPosition.getColumn()+i <= 0|| myPosition.getColumn()+i > 8){
+        for (int i = 1; i < 8; i++){
+            if(myPosition.getRow()+i == 8 || myPosition.getColumn()+i == 8){
                 break;}
-            ChessPosition checkPosition = new ChessPosition(myPosition.getRow()+i-1,myPosition.getColumn()+i-1);
-            ChessPosition nextPosition = new ChessPosition(myPosition.getRow()+i,myPosition.getColumn()+i);
-            if (i != 1 && board.getPiece(checkPosition) != null) {  //causes problems with index out of range
+            ChessPosition checkPosition = new ChessPosition(myPosition.getRow()+i+1,myPosition.getColumn()+i+1);
+            //ChessPosition nextPosition = new ChessPosition(myPosition.getRow()+i,myPosition.getColumn()+i);
+            if (board.getPiece(checkPosition) != null) {  //causes problems with index out of range
                 if (board.getPiece(checkPosition).getTeamColor() != board.getPiece(myPosition).getTeamColor()){
-                    validMoves.add(new ChessMove(myPosition, nextPosition, null));
+                    validMoves.add(new ChessMove(myPosition, checkPosition, null));
                 }
                     break;
                 }
             else{
 
 
-                validMoves.add(new ChessMove(myPosition, nextPosition, null));
+                validMoves.add(new ChessMove(myPosition, checkPosition, null));
 
             }
 
         }
         //row decreasing, column increasing
-        for (int i = 1; i < 7; i++){
-            if(myPosition.getRow()-i <= 0 || myPosition.getRow()-i > 8 || myPosition.getColumn()+i <= 0|| myPosition.getColumn()+i > 8){
+        for (int i = 1; i < 8; i++){
+            if(myPosition.getRow()-i == -1 ||  myPosition.getColumn()+i == 8){
                 break;}
-            ChessPosition checkPosition = new ChessPosition(myPosition.getRow()-i+1,myPosition.getColumn()+i-1);
-            ChessPosition nextPosition = new ChessPosition(myPosition.getRow()-i,myPosition.getColumn()+i);
-            if (i != 1 && board.getPiece(checkPosition) != null) {  //causes problems with index out of range
+            ChessPosition checkPosition = new ChessPosition(myPosition.getRow()-i+1,myPosition.getColumn()+i+1);
+            //ChessPosition nextPosition = new ChessPosition(myPosition.getRow()-i,myPosition.getColumn()+i);
+            if (board.getPiece(checkPosition) != null) {  //causes problems with index out of range
                 if (board.getPiece(checkPosition).getTeamColor() != board.getPiece(myPosition).getTeamColor()){
-                    validMoves.add(new ChessMove(myPosition, nextPosition, null));
+                    validMoves.add(new ChessMove(myPosition, checkPosition, null));
                 }
                 break;
             }
             else{
-                validMoves.add(new ChessMove(myPosition, nextPosition, null));
+                validMoves.add(new ChessMove(myPosition, checkPosition, null));
 
             }
 
         }
         // row increasing, column decreasing
-        for (int i = 1; i < 7; i++){
-            if(myPosition.getRow()+i <= 0 || myPosition.getRow()+i > 8 || myPosition.getColumn()-i <= 0|| myPosition.getColumn()-i > 8){
+        for (int i = 1; i < 8; i++){
+            if(myPosition.getRow()+i == 8 || myPosition.getColumn()-i  == -1){
                 break;}
-            ChessPosition checkPosition = new ChessPosition(myPosition.getRow()+i-1,myPosition.getColumn()-i+1);
-            ChessPosition nextPosition = new ChessPosition(myPosition.getRow()+i,myPosition.getColumn()-i);
-            if (i != 1 && board.getPiece(checkPosition) != null) {  //causes problems with index out of range
+            ChessPosition checkPosition = new ChessPosition(myPosition.getRow()+i+1,myPosition.getColumn()-i+1);
+            //ChessPosition nextPosition = new ChessPosition(myPosition.getRow()+i,myPosition.getColumn()-i);
+            if (board.getPiece(checkPosition) != null) {  //causes problems with index out of range
                 if (board.getPiece(checkPosition).getTeamColor() != board.getPiece(checkPosition).getTeamColor()){
-                    validMoves.add(new ChessMove(myPosition, nextPosition, null));
+                    validMoves.add(new ChessMove(myPosition, checkPosition, null));
                 }
                 break;
             }
             else{
 
-                validMoves.add(new ChessMove(myPosition, nextPosition, null));
+                validMoves.add(new ChessMove(myPosition, checkPosition, null));
 
             }
 
         }
         // row decreasing, column decreasing
-        for (int i = 1; i < 7; i++){
-            if(myPosition.getRow()-i <= 0 || myPosition.getRow()-i > 8 || myPosition.getColumn()-i <= 0|| myPosition.getColumn()-i > 8){
+        for (int i = 1; i < 8; i++){
+            if(myPosition.getRow()-i == -1 ||myPosition.getColumn()-i == -1){
                 break;}
             ChessPosition checkPosition = new ChessPosition(myPosition.getRow()-i+1,myPosition.getColumn()-i+1);
-            ChessPosition nextPosition = new ChessPosition(myPosition.getRow()-i,myPosition.getColumn()-i);
-            if (i != 1 && board.getPiece(checkPosition) != null) {  //checks if space has a piece
+            //ChessPosition nextPosition = new ChessPosition(myPosition.getRow()-i,myPosition.getColumn()-i);
+            if (board.getPiece(checkPosition) != null) {  //checks if space has a piece
                 if (board.getPiece(checkPosition).getTeamColor() != board.getPiece(myPosition).getTeamColor()){ //checks if piece is enemy
-                    validMoves.add(new ChessMove(myPosition, nextPosition, null));
+                    validMoves.add(new ChessMove(myPosition, checkPosition, null));
                 }
                 break;
             }
             else{
-                validMoves.add(new ChessMove(myPosition, nextPosition, null));
+                validMoves.add(new ChessMove(myPosition, checkPosition, null));
                     }
 
             }
