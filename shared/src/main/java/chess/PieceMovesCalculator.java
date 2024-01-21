@@ -4,6 +4,7 @@ package chess;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Objects;
+import java.util.stream.Stream;
 
 //Generates valid moves based on pieceType and position
 public class PieceMovesCalculator {
@@ -398,6 +399,17 @@ public class PieceMovesCalculator {
         }
 
 
+
+
+        return validMoves;
+
+    }
+
+    public Collection<ChessMove> QueenMovesCalculator(ChessBoard board, ChessPosition myPosition){
+        var validMoves = new HashSet<ChessMove>();
+
+        validMoves.addAll(RookMovesCalculator(board, myPosition));
+        validMoves.addAll(BishopMovesCalculator(board, myPosition));
 
 
         return validMoves;

@@ -76,6 +76,10 @@ public class ChessPiece {
         if (type == PieceType.ROOK){
             return moves.RookMovesCalculator(board, myPosition);
         }
+        if (type == PieceType.QUEEN){
+            return moves.QueenMovesCalculator(board, myPosition);
+        }
+
         return new ArrayList<>();
 
 
