@@ -256,27 +256,58 @@ public class PieceMovesCalculator {
         int colAdjusted = myPosition.getColumn() + 1;
 
         ChessPiece promoPiece = null;
-        if(rowAdjusted +i == 8 || rowAdjusted +i == 1){
-            promoPiece =
-
-        }
-
         if (rowAdjusted+i != 9 && rowAdjusted + i != 0){ //checks space in front
             ChessPosition newPosition = new ChessPosition(rowAdjusted + i , colAdjusted);
             if (board.getPiece(newPosition) == null){
-                validMoves.add(new ChessMove(myPosition, newPosition, null));
+                if ((i == 1 && rowAdjusted == 2) ||(i == -1 && rowAdjusted == 7)){
+                    ChessPosition newPosition2 = new ChessPosition(rowAdjusted + (2*i), colAdjusted);
+                    validMoves.add(new ChessMove(myPosition, newPosition, null));
+                    if(board.getPiece(newPosition2) == null) {
+                        validMoves.add(new ChessMove(myPosition, newPosition2, null));
+                    }
+                }
+                else if(rowAdjusted +i == 8 || rowAdjusted +i == 1){
+                    validMoves.add(new ChessMove(myPosition, newPosition, ChessPiece.PieceType.QUEEN));
+                    validMoves.add(new ChessMove(myPosition, newPosition, ChessPiece.PieceType.BISHOP));
+                    validMoves.add(new ChessMove(myPosition, newPosition, ChessPiece.PieceType.KNIGHT));
+                    validMoves.add(new ChessMove(myPosition, newPosition, ChessPiece.PieceType.ROOK));
+
+                } else {
+                    validMoves.add(new ChessMove(myPosition, newPosition, null));
+                }
 
 
             }
             ChessPosition rightDiag = new ChessPosition(rowAdjusted + i, colAdjusted + 1);
-            if (colAdjusted +1 != 9 && board.getPiece(rightDiag) != null && board.getPiece(newPosition).getTeamColor() != board.getPiece(myPosition).getTeamColor()){
-                validMoves.add(new ChessMove(myPosition, newPosition, null));
+            if (colAdjusted + 1 != 9 && board.getPiece(rightDiag) != null) {
+                if (board.getPiece(rightDiag).getTeamColor() != board.getPiece(myPosition).getTeamColor()) {
+                    if (rowAdjusted + i == 8 || rowAdjusted + i == 1) {
+                        validMoves.add(new ChessMove(myPosition, rightDiag, ChessPiece.PieceType.QUEEN));
+                        validMoves.add(new ChessMove(myPosition, rightDiag, ChessPiece.PieceType.BISHOP));
+                        validMoves.add(new ChessMove(myPosition, rightDiag, ChessPiece.PieceType.KNIGHT));
+                        validMoves.add(new ChessMove(myPosition, rightDiag, ChessPiece.PieceType.ROOK));
+
+                    } else {
+                        validMoves.add(new ChessMove(myPosition, rightDiag, null));
+                    }
+                }
             }
             ChessPosition leftDiag = new ChessPosition(rowAdjusted + i, colAdjusted - 1);
-            if (colAdjusted -1 != 9 && board.getPiece(leftDiag) != null && board.getPiece(newPosition).getTeamColor() != board.getPiece(myPosition).getTeamColor()){
-                validMoves.add(new ChessMove(myPosition, newPosition, null));
+            if (colAdjusted -1 != -1 && board.getPiece(leftDiag) != null){
+                if (board.getPiece(leftDiag).getTeamColor() != board.getPiece(myPosition).getTeamColor()){
+                if(rowAdjusted +i == 8 || rowAdjusted +i == 1){
+                    validMoves.add(new ChessMove(myPosition, leftDiag, ChessPiece.PieceType.QUEEN));
+                    validMoves.add(new ChessMove(myPosition, leftDiag, ChessPiece.PieceType.BISHOP));
+                    validMoves.add(new ChessMove(myPosition, leftDiag, ChessPiece.PieceType.KNIGHT));
+                    validMoves.add(new ChessMove(myPosition, leftDiag, ChessPiece.PieceType.ROOK));
+
+                } else {
+                    validMoves.add(new ChessMove(myPosition, leftDiag, null));
+                }
             }
         }
+            }
+
 
 
 
