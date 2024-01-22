@@ -86,7 +86,7 @@ public class ChessPiece {
     }
 
 
-   /* @Override
+   @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
@@ -97,7 +97,7 @@ public class ChessPiece {
     @Override
     public int hashCode() {
         return Objects.hash(pieceColor, type);
-    }*/
+    }
 }
 
 
