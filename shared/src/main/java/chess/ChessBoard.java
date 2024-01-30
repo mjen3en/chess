@@ -23,6 +23,8 @@ public class ChessBoard {
      */
     public void addPiece(ChessPosition position, ChessPiece piece) {
         squares[position.getRow()][position.getColumn()] = piece;
+        ChessGame.TeamColor pieceColor = piece.getTeamColor();
+        ChessGame.addPieceMap(position, piece);
 
     }
 

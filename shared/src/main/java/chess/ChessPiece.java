@@ -98,6 +98,35 @@ public class ChessPiece {
     public int hashCode() {
         return Objects.hash(pieceColor, type);
     }
+
+
+   @Override
+    public String toString() {
+
+       if (type == PieceType.BISHOP) {
+           return pieceColor.toString() + " BISHOP";
+
+       }
+       if (type == PieceType.KING) {
+           return pieceColor.toString() + " KING";
+       }
+
+       if (type == PieceType.KNIGHT) {
+           return pieceColor.toString() + " KNIGHT";
+       }
+
+       if (type == PieceType.PAWN) {
+           return pieceColor.toString() + " PAWN";
+       }
+
+       if (type == PieceType.ROOK) {
+           return pieceColor.toString() + " ROOK";
+       }
+       if (type == PieceType.QUEEN) {
+           return pieceColor.toString() + " QUEEN";
+       }
+       return "";
+    }
 }
 
 
