@@ -1,9 +1,6 @@
 package chess;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
+import java.util.*;
 
 /**
  * For a class that can manage a chess game, making moves on a board
@@ -22,7 +19,7 @@ public class ChessGame {
 
 
     public ChessGame() {
-        board.resetBoard();
+        //board.resetBoard();
     }
 
 
@@ -92,21 +89,26 @@ public class ChessGame {
      * @return True if the specified team is in check
      */
     public boolean isInCheck(TeamColor teamColor) {
-        for (Map.Entry<ChessPosition, ChessPiece> set: blackPieces.entrySet()){
+        HashMap<ChessPosition, ChessPiece> teamHashMap;
+        ChessPosition kingPosition;
 
-            // Printing all elements of a Map
-             System.out.println(set.getKey() + " = "
-                    + set.getValue());
+        if (teamColor == TeamColor.BLACK){
+            teamHashMap = whitePieces;
+            kingPosition = getKingPosition(blackPieces);
+        } else {
+            teamHashMap = blackPieces;
+            kingPosition = getKingPosition(whitePieces);
+        }
+        HashSet<ChessPosition> allTeamMoves = new HashSet<ChessPosition>();
+        for (Map.Entry<ChessPosition, ChessPiece> set: teamHashMap.entrySet()){
+            Set<ChessPosition> allPieceMoves = new HashSet<ChessPosition>();
+            allPieceMoves.addAll(getAllEndPositions(set.getValue().pieceMoves(board, set.getKey())));
+            allTeamMoves.addAll(allPieceMoves);
         }
 
-//        for (Map.Entry<ChessPosition, ChessPiece> set: whitePieces.entrySet()){
-//
-//            // Printing all elements of a Map
-//            System.out.println(set.getKey() + " = "
-//                    + set.getValue());
-//        }
 
-        return true;
+
+        return allTeamMoves.contains(kingPosition);
     }
 
 
@@ -137,7 +139,7 @@ public class ChessGame {
      * @param board the new board to use
      */
     public void setBoard(ChessBoard board) {
-        board.resetBoard();
+        this.board = board;
     }
 
     /**
@@ -158,4 +160,30 @@ public class ChessGame {
         }
 
     }
+
+    public static ChessPosition getKingPosition(HashMap<ChessPosition, ChessPiece> pieceMap) {
+        for (Map.Entry<ChessPosition, ChessPiece> entry : pieceMap.entrySet()) {
+            if (entry.getValue().getPieceType() == ChessPiece.PieceType.KING) {
+                return entry.getKey();
+            }
+        }
+        return null;
+    }
+
+
+    private Collection<ChessPosition> getAllEndPositions(Collection<ChessMove> pieceMoves){
+        Iterator<ChessMove> iterator = pieceMoves.iterator();
+        Collection<ChessPosition> allEndPositions = new HashSet<ChessPosition>();
+        while(iterator.hasNext()){
+            allEndPositions.add(iterator.next().getEndPosition());
+
+        }
+        return allEndPositions;
+    }
+
+//    private static boolean checkPositionSet(HashSet<ChessPosition> set, ChessPosition kingPosition){
+//
+//
+//
+//    }
 }
