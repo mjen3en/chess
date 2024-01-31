@@ -368,7 +368,7 @@ public class PieceMovesCalculator {
             ChessPosition checkPosition = new ChessPosition(rowAdjusted,colAdjusted - i);
             //ChessPosition nextPosition = new ChessPosition(myPosition.getRow()+i,myPosition.getColumn()-i);
             if (board.getPiece(checkPosition) != null) {  //causes problems with index out of range
-                if (board.getPiece(checkPosition).getTeamColor() != board.getPiece(checkPosition).getTeamColor()){
+                if (board.getPiece(checkPosition).getTeamColor() != board.getPiece(myPosition).getTeamColor()){
                     validMoves.add(new ChessMove(myPosition, checkPosition, null));
                 }
                 break;
