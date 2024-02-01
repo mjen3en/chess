@@ -99,16 +99,16 @@ public class ChessGame {
             teamHashMap = blackPieces;
             kingPosition = getKingPosition(whitePieces);
         }
-        HashSet<ChessPosition> allTeamMoves = new HashSet<ChessPosition>();
-        for (Map.Entry<ChessPosition, ChessPiece> set: teamHashMap.entrySet()){
-            Set<ChessPosition> allPieceMoves = new HashSet<ChessPosition>();
-            allPieceMoves.addAll(getAllEndPositions(set.getValue().pieceMoves(board, set.getKey())));
-            allTeamMoves.addAll(allPieceMoves);
-        }
+//        HashSet<ChessPosition> allTeamMoves = new HashSet<ChessPosition>();
+//        for (Map.Entry<ChessPosition, ChessPiece> set: teamHashMap.entrySet()){
+//            Set<ChessPosition> allPieceMoves = new HashSet<ChessPosition>();
+//            allPieceMoves.addAll(getAllEndPositions(set.getValue().pieceMoves(board, set.getKey())));
+//            allTeamMoves.addAll(allPieceMoves);
+//        }
 
 
 
-        return allTeamMoves.contains(kingPosition);
+        return checkPosition(teamHashMap, kingPosition, board);
     }
 
 
@@ -119,7 +119,18 @@ public class ChessGame {
      * @return True if the specified team is in checkmate
      */
     public boolean isInCheckmate(TeamColor teamColor) {
-            throw new RuntimeException("Not implemented");
+        HashMap<ChessPosition, ChessPiece> teamHashMap;
+        ChessPosition kingPosition;
+
+        if (teamColor == TeamColor.BLACK){
+            teamHashMap = whitePieces;
+            kingPosition = getKingPosition(blackPieces);
+        } else {
+            teamHashMap = blackPieces;
+            kingPosition = getKingPosition(whitePieces);
+        }
+
+        return checkPosition(teamHashMap, kingPosition, board) && checkMoveSet(teamHashMap, kingPosition, board);
     }
 
     /**
@@ -130,7 +141,18 @@ public class ChessGame {
      * @return True if the specified team is in stalemate, otherwise false
      */
     public boolean isInStalemate(TeamColor teamColor) {
-            throw new RuntimeException("Not implemented");
+        HashMap<ChessPosition, ChessPiece> teamHashMap;
+        ChessPosition kingPosition;
+
+        if (teamColor == TeamColor.BLACK){
+            teamHashMap = whitePieces;
+            kingPosition = getKingPosition(blackPieces);
+        } else {
+            teamHashMap = blackPieces;
+            kingPosition = getKingPosition(whitePieces);
+        }
+
+        return checkMoveSet(teamHashMap, kingPosition, board);
     }
 
     /**
@@ -181,9 +203,58 @@ public class ChessGame {
         return allEndPositions;
     }
 
-//    private static boolean checkPositionSet(HashSet<ChessPosition> set, ChessPosition kingPosition){
-//
-//
-//
-//    }
+    private boolean checkPosition(HashMap<ChessPosition, ChessPiece> teamHashMap ,ChessPosition kingPosition,ChessBoard board ){
+        HashSet<ChessPosition> allTeamMoves = new HashSet<ChessPosition>();
+        for (Map.Entry<ChessPosition, ChessPiece> set: teamHashMap.entrySet()){
+            Set<ChessPosition> allPieceMoves = new HashSet<ChessPosition>();
+            allPieceMoves.addAll(getAllEndPositions(set.getValue().pieceMoves(board, set.getKey())));
+            allTeamMoves.addAll(allPieceMoves);
+        }
+
+        return allTeamMoves.contains(kingPosition);
+
+
+    }
+
+    private boolean checkMoveSet(HashMap<ChessPosition, ChessPiece> teamHashMap ,ChessPosition kingPosition,ChessBoard board ){
+        HashSet<ChessPosition> allTeamMoves = new HashSet<ChessPosition>();
+        HashSet<ChessPosition> allKingMoves = new HashSet<ChessPosition>();
+        allKingMoves.addAll(getAllEndPositions(board.getPiece(kingPosition).pieceMoves(board,kingPosition)));
+
+        for (Map.Entry<ChessPosition, ChessPiece> set: teamHashMap.entrySet()){
+            Set<ChessPosition> allPieceMoves = new HashSet<ChessPosition>();
+            if (set.getValue().getPieceType() == ChessPiece.PieceType.PAWN){
+                int i = 1;
+                if (set.getValue().getTeamColor() == TeamColor.BLACK){
+                    i = -1;
+                }
+                var pawnRow = set.getKey().getRow() + 1;
+                var pawnCol = set.getKey().getColumn() + 1;
+                if (pawnCol + 1 < 9) {
+                    ChessPosition newPosition = new ChessPosition(pawnRow + i, pawnCol + 1);
+                    allPieceMoves.add(newPosition);
+                }
+                if (pawnCol - 1 > 0) {
+                    ChessPosition newPosition = new ChessPosition(pawnRow + i, pawnCol - 1);
+                    allPieceMoves.add(newPosition);
+                }
+            } else {
+                allPieceMoves.addAll(getAllEndPositions(set.getValue().pieceMoves(board, set.getKey())));
+            }
+            allTeamMoves.addAll(allPieceMoves);
+        }
+
+        //iterate through king moves and see if exists in all moves
+        Iterator<ChessPosition> iterator = allKingMoves.iterator();
+        while(iterator.hasNext()){
+            if(allTeamMoves.contains(iterator.next())){
+                continue;
+
+            } else{
+                return false;
+            }
+        }
+        return true;
+
+    }
 }
