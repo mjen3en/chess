@@ -78,6 +78,11 @@ public class ChessBoard {
         addPiece(new ChessPosition(1, 8), new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.ROOK));
     }
 
+    public void movePiece(ChessPosition position){
+        squares[position.getRow()][position.getColumn()] = null;
+
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -88,6 +93,6 @@ public class ChessBoard {
 
     @Override
     public int hashCode() {
-        return Arrays.hashCode(squares);
+        return Arrays.deepHashCode(squares);
     }
 }
