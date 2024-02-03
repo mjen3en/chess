@@ -81,6 +81,7 @@ public class ChessGame {
     public void makeMove(ChessMove move) throws InvalidMoveException {
             board.addPiece(move.getEndPosition(), board.getPiece(move.getStartPosition()));
             board.movePiece(move.getStartPosition());
+            addPieceMap(move.getEndPosition(), board.getPiece(move.getEndPosition()));
     }
 
     /**
@@ -180,6 +181,16 @@ public class ChessGame {
             blackPieces.put(position, piece);
         } else{
             whitePieces.put(position, piece);
+        }
+
+    }
+
+    public static void deletePieceMap(ChessPosition position, ChessPiece piece){
+        TeamColor color = piece.getTeamColor();
+        if (color == TeamColor.BLACK){
+            blackPieces.remove(position, piece);
+        } else{
+            whitePieces.remove(position, piece);
         }
 
     }

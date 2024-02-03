@@ -23,7 +23,6 @@ public class ChessBoard {
      */
     public void addPiece(ChessPosition position, ChessPiece piece) {
         squares[position.getRow()][position.getColumn()] = piece;
-        ChessGame.TeamColor pieceColor = piece.getTeamColor();
         ChessGame.addPieceMap(position, piece);
 
     }
@@ -36,6 +35,10 @@ public class ChessBoard {
      * position
      */
     public ChessPiece getPiece(ChessPosition position) {
+//        if (squares[position.getRow()][position.getColumn()] == null){
+//            System.out.println(position.toString());
+//        }
+
         return squares[position.getRow()][position.getColumn()];
     }
 
@@ -79,6 +82,7 @@ public class ChessBoard {
     }
 
     public void movePiece(ChessPosition position){
+        ChessGame.deletePieceMap(position, getPiece(position));
         squares[position.getRow()][position.getColumn()] = null;
 
     }

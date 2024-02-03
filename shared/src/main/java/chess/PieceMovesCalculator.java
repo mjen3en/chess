@@ -88,7 +88,7 @@ public class PieceMovesCalculator {
             ChessPosition checkPosition = new ChessPosition(myPosition.getRow()+i+1,myPosition.getColumn()-i+1);
             //ChessPosition nextPosition = new ChessPosition(myPosition.getRow()+i,myPosition.getColumn()-i);
             if (board.getPiece(checkPosition) != null) {  //causes problems with index out of range
-                if (board.getPiece(checkPosition).getTeamColor() != board.getPiece(checkPosition).getTeamColor()){
+                if (board.getPiece(checkPosition).getTeamColor() != board.getPiece(myPosition).getTeamColor()){
                     validMoves.add(new ChessMove(myPosition, checkPosition, null));
                 }
                 break;
@@ -285,17 +285,16 @@ public class PieceMovesCalculator {
         int colAdjusted = myPosition.getColumn() + 1;
 
         ChessPiece promoPiece = null;
-        if (rowAdjusted+i != 9 && rowAdjusted + i != 0){ //checks space in front
-            ChessPosition newPosition = new ChessPosition(rowAdjusted + i , colAdjusted);
-            if (board.getPiece(newPosition) == null){
-                if ((i == 1 && rowAdjusted == 2) ||(i == -1 && rowAdjusted == 7)){
-                    ChessPosition newPosition2 = new ChessPosition(rowAdjusted + (2*i), colAdjusted);
+        if (rowAdjusted+i != 9 && rowAdjusted + i != 0) { //checks space in front
+            ChessPosition newPosition = new ChessPosition(rowAdjusted + i, colAdjusted);
+            if (board.getPiece(newPosition) == null) {
+                if ((i == 1 && rowAdjusted == 2) || (i == -1 && rowAdjusted == 7)) {
+                    ChessPosition newPosition2 = new ChessPosition(rowAdjusted + (2 * i), colAdjusted);
                     validMoves.add(new ChessMove(myPosition, newPosition, null));
-                    if(board.getPiece(newPosition2) == null) {
+                    if (board.getPiece(newPosition2) == null) {
                         validMoves.add(new ChessMove(myPosition, newPosition2, null));
                     }
-                }
-                else if(rowAdjusted +i == 8 || rowAdjusted +i == 1){
+                } else if (rowAdjusted + i == 8 || rowAdjusted + i == 1) {
                     validMoves.add(new ChessMove(myPosition, newPosition, ChessPiece.PieceType.QUEEN));
                     validMoves.add(new ChessMove(myPosition, newPosition, ChessPiece.PieceType.BISHOP));
                     validMoves.add(new ChessMove(myPosition, newPosition, ChessPiece.PieceType.KNIGHT));
@@ -322,20 +321,24 @@ public class PieceMovesCalculator {
                 }
             }
             ChessPosition leftDiag = new ChessPosition(rowAdjusted + i, colAdjusted - 1);
-            if (colAdjusted -1 != -1 && board.getPiece(leftDiag) != null){
-                if (board.getPiece(leftDiag).getTeamColor() != board.getPiece(myPosition).getTeamColor()){
-                if(rowAdjusted +i == 8 || rowAdjusted +i == 1){
-                    validMoves.add(new ChessMove(myPosition, leftDiag, ChessPiece.PieceType.QUEEN));
-                    validMoves.add(new ChessMove(myPosition, leftDiag, ChessPiece.PieceType.BISHOP));
-                    validMoves.add(new ChessMove(myPosition, leftDiag, ChessPiece.PieceType.KNIGHT));
-                    validMoves.add(new ChessMove(myPosition, leftDiag, ChessPiece.PieceType.ROOK));
+            if (colAdjusted - 1 != 0) {
+                if (board.getPiece(leftDiag) != null) {
+                    if (board.getPiece(leftDiag).getTeamColor() != board.getPiece(myPosition).getTeamColor()) {
+                        if (rowAdjusted + i == 8 || rowAdjusted + i == 1) {
+                            validMoves.add(new ChessMove(myPosition, leftDiag, ChessPiece.PieceType.QUEEN));
+                            validMoves.add(new ChessMove(myPosition, leftDiag, ChessPiece.PieceType.BISHOP));
+                            validMoves.add(new ChessMove(myPosition, leftDiag, ChessPiece.PieceType.KNIGHT));
+                            validMoves.add(new ChessMove(myPosition, leftDiag, ChessPiece.PieceType.ROOK));
 
-                } else {
-                    validMoves.add(new ChessMove(myPosition, leftDiag, null));
+                        } else {
+                            validMoves.add(new ChessMove(myPosition, leftDiag, null));
+                        }
+                    }
+
                 }
+
             }
         }
-            }
 
 
 
