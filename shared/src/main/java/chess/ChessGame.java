@@ -11,7 +11,7 @@ import java.util.*;
 public class ChessGame {
 
     ChessBoard board = new ChessBoard();
-    TeamColor turn;
+    TeamColor turn = TeamColor.WHITE;
 
     public static HashMap<ChessPosition, ChessPiece> blackPieces = new HashMap<ChessPosition, ChessPiece>();
     public static HashMap<ChessPosition, ChessPiece> whitePieces = new HashMap<ChessPosition, ChessPiece>();
@@ -58,8 +58,11 @@ public class ChessGame {
      * @return Set of valid moves for requested piece, or null if no piece at
      * startPosition
      */
-    public Collection<ChessMove> validMoves(ChessPosition startPosition){
-        TeamColor color = board.getPiece(startPosition).getTeamColor();
+    public Collection<ChessMove> validMoves(ChessPosition startPosition)  {
+//        TeamColor color = board.getPiece(startPosition).getTeamColor();
+//        if (color != turn){
+//            throw new InvalidMoveException();
+//        }
         HashMap teamHashMap;
 //        if (color == TeamColor.BLACK){
 //            teamHashMap = whitePieces;
@@ -69,7 +72,7 @@ public class ChessGame {
 //        }
         ChessPiece currentPiece = board.getPiece(startPosition);
         HashSet<ChessMove> moves = new HashSet<ChessMove>();
-        if (currentPiece == null) {
+        if (currentPiece == null ) {
             return null;
         } else {
                 HashSet<ChessMove> potentialMoves = new HashSet<>();
@@ -96,9 +99,25 @@ public class ChessGame {
      * @throws InvalidMoveException if move is invalid
      */
     public void makeMove(ChessMove move) throws InvalidMoveException {
+        if (turn != board.getPiece(move.getStartPosition()).getTeamColor()){
+            throw new InvalidMoveException();
+        }
+           Collection<ChessMove> valid =  validMoves(move.getStartPosition());
+           if (!(valid.contains(move)) || turn != board.getPiece(move.getStartPosition()).getTeamColor()) {
+               throw new InvalidMoveException();
+        }
+
+           if (board.getPiece(move.getEndPosition()) == null){
+               board.movePiece(move.getEndPosition());
+           }
             board.addPiece(move.getEndPosition(), board.getPiece(move.getStartPosition()));
             board.movePiece(move.getStartPosition());
             addPieceMap(move.getEndPosition(), board.getPiece(move.getEndPosition()));
+            if (turn == TeamColor.WHITE){
+                turn = TeamColor.BLACK;
+            } else {
+                turn = TeamColor.WHITE;
+            }
     }
 
     public void tryMove(ChessMove move) {
