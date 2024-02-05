@@ -14,7 +14,7 @@ import java.util.Objects;
 public class ChessPiece {
 
     private final ChessGame.TeamColor pieceColor;
-    private final PieceType type;
+    private PieceType type;
 
     public ChessPiece(ChessGame.TeamColor pieceColor, ChessPiece.PieceType type) {
         this.pieceColor = pieceColor;
@@ -83,6 +83,10 @@ public class ChessPiece {
         return new ArrayList<>();
 
 
+    }
+
+    public void changePieceType(ChessPiece.PieceType pieceType){
+        type = pieceType;
     }
 
 

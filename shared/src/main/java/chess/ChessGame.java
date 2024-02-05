@@ -19,7 +19,9 @@ public class ChessGame {
 
 
     public ChessGame() {
-        //board.resetBoard();
+        blackPieces.clear();
+        whitePieces.clear();
+
     }
 
 
@@ -110,7 +112,13 @@ public class ChessGame {
            if (board.getPiece(move.getEndPosition()) != null){
                board.movePiece(move.getEndPosition());
            }
-            board.addPiece(move.getEndPosition(), board.getPiece(move.getStartPosition()));
+
+           ChessPiece thisPiece = board.getPiece(move.getStartPosition());
+           if (move.getPromotionPiece() != null){
+               thisPiece.changePieceType(move.getPromotionPiece());
+           }
+
+            board.addPiece(move.getEndPosition(), thisPiece);
             board.movePiece(move.getStartPosition());
             addPieceMap(move.getEndPosition(), board.getPiece(move.getEndPosition()));
             if (turn == TeamColor.WHITE){
@@ -142,6 +150,10 @@ public class ChessGame {
         } else {
             teamHashMap = blackPieces;
             kingPosition = getKingPosition(whitePieces);
+        }
+
+        if (kingPosition == null){
+            return false;
         }
 //        HashSet<ChessPosition> allTeamMoves = new HashSet<ChessPosition>();
 //        for (Map.Entry<ChessPosition, ChessPiece> set: teamHashMap.entrySet()){
@@ -332,5 +344,9 @@ public class ChessGame {
         }
         return valid;
 
+    }
+
+    public HashMap<ChessPosition, ChessPiece> getBlackMap (){
+        return blackPieces;
     }
 }
