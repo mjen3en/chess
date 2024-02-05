@@ -87,6 +87,18 @@ public class ChessBoard {
 
     }
 
+    public void populatePieceMaps(){
+        for (int i = 0; i < 8; i++ ){
+            for (int j = 0; j < 8; j++){
+                if (squares[i][j] != null){
+                    ChessPosition thisPosition = new ChessPosition(i + 1, j + 1);
+                    ChessGame.addPieceMap(thisPosition, getPiece(thisPosition));
+                }
+            }
+
+        }
+    }
+
 //    public void addPieceMap(ChessPosition position, ChessPiece piece){
 //        ChessGame.TeamColor color = piece.getTeamColor();
 //        if (color == ChessGame.TeamColor.BLACK){
