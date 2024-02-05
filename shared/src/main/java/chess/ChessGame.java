@@ -107,7 +107,7 @@ public class ChessGame {
                throw new InvalidMoveException();
         }
 
-           if (board.getPiece(move.getEndPosition()) == null){
+           if (board.getPiece(move.getEndPosition()) != null){
                board.movePiece(move.getEndPosition());
            }
             board.addPiece(move.getEndPosition(), board.getPiece(move.getStartPosition()));
