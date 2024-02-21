@@ -1,8 +1,11 @@
 package server;
 
+import dataAccess.MemoryGameDAO;
 import spark.*;
 
 public class Server {
+
+    MemoryGameDAO gameDAO = new MemoryGameDAO();
 
     public int run(int desiredPort) {
         Spark.port(desiredPort);
