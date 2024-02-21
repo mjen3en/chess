@@ -7,6 +7,8 @@ import model.GameData;
 import java.util.List;
 
 public interface GameDAO {
+
+
     GameData getGame(int gameID);
 //    void joinGame();
 //    void updateGame();
@@ -16,5 +18,7 @@ public interface GameDAO {
     Integer insertGame(GameData gameData);
 //    List<ChessGame> listGames();
 
-    void delete();
+    void clear();
+
+    int getMapSize();
 }

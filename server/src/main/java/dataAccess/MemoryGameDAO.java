@@ -3,16 +3,18 @@ package dataAccess;
 import chess.ChessGame;
 import model.GameData;
 
+import java.util.HashMap;
 import java.util.Map;
 
 public class MemoryGameDAO  implements  GameDAO{
 
-    Map<Integer, GameData> games;
+    public static HashMap<Integer, GameData> games = new HashMap<>();
+    int numGames = 0;
 
 
 
     @Override
-    public void delete() {
+    public void clear() {
         games.clear();
     }
 
@@ -23,10 +25,14 @@ public class MemoryGameDAO  implements  GameDAO{
 
     @Override
     public Integer insertGame(GameData gameData) {
-        gameData.setGameId(games.size() + 1);
+        numGames++;
+        gameData.setGameId(numGames);
         games.put(gameData.getGameId(), gameData);
-
         return gameData.getGameId();
+    }
+
+    public int getMapSize(){
+        return games.size();
     }
 
 

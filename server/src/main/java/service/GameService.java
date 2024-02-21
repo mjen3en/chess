@@ -2,17 +2,28 @@ package service;
 
 
 import chess.ChessGame;
+import dataAccess.GameDAO;
 import dataAccess.MemoryGameDAO;
 import model.GameData;
 
 public class GameService {
+    //MemoryGameDAO gameDao = new MemoryGameDAO();
 
-    public GameData getGame(ChessGame.TeamColor clientColor, Integer gameID){
-        return new GameData();
+    private final GameDAO gameDAO;
+
+    public GameService(GameDAO gDAO) {
+        gameDAO = gDAO;
     }
 
     public void clear(){
-        //call memory game dao and clears
-        return;
+        gameDAO.clear();
+    }
+
+    public int insertGame(GameData game){
+        return gameDAO.insertGame(game);
+    }
+
+    public int getMapSize(){
+        return gameDAO.getMapSize();
     }
 }
