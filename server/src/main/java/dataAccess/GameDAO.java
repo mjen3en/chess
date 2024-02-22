@@ -4,6 +4,7 @@ import chess.ChessGame;
 import model.AuthData;
 import model.GameData;
 
+import java.util.HashMap;
 import java.util.List;
 
 public interface GameDAO {
@@ -20,5 +21,5 @@ public interface GameDAO {
 
     void clear();
 
-    int getMapSize();
+    HashMap getGameMap();
 }

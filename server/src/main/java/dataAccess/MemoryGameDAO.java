@@ -11,6 +11,10 @@ public class MemoryGameDAO  implements  GameDAO{
     public static HashMap<Integer, GameData> games = new HashMap<>();
     int numGames = 0;
 
+    public HashMap getGameMap(){
+        return games;
+    }
+
 
 
     @Override
@@ -31,9 +35,7 @@ public class MemoryGameDAO  implements  GameDAO{
         return gameData.getGameId();
     }
 
-    public int getMapSize(){
-        return games.size();
-    }
+
 
 
 }

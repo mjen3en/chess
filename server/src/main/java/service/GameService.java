@@ -34,6 +34,6 @@ public class GameService {
     }
 
     public int getMapSize(){
-        return gameDAO.getMapSize();
+        return gameDAO.getGameMap().size();
     }
 }

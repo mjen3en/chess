@@ -35,4 +35,7 @@ public class Server {
         return "";
     }
 
+    public int port() {
+        return Spark.port();
+    }
 }

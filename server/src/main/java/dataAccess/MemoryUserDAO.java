@@ -7,6 +7,8 @@ import java.util.HashSet;
 
 public class MemoryUserDAO implements UserDAO{
 
+
+
     public static HashMap<String, UserData> userMap = new HashMap<>();
 
 
@@ -20,4 +22,10 @@ public class MemoryUserDAO implements UserDAO{
     public void insertUser(UserData userData) {
         userMap.put(userData.username, userData);
     }
+
+    @Override
+    public HashMap<String, UserData> getUserMap() {
+        return userMap;
+    }
+
 }
