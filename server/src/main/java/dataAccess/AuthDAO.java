@@ -10,4 +10,6 @@ public interface AuthDAO {
     void insertAuth(AuthData authData);
 
     HashMap getAuthMap();
+
+    void clear();
 }

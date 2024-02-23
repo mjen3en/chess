@@ -13,7 +13,7 @@ public class Server {
     GameDAO gDao = new MemoryGameDAO();
     AuthDAO aDao = new MemoryAuthDAO();
     UserDAO uDao = new MemoryUserDAO();
-    GameService gameService = new GameService(gDao);
+    GameService gameService = new GameService(gDao, uDao, aDao);
     RegistrationService registrationService = new RegistrationService(aDao, uDao);
 
 

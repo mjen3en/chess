@@ -14,7 +14,7 @@ class ServiceTests {
     void clear() {
 
 
-        GameService test =  new GameService(new MemoryGameDAO());
+        GameService test =  new GameService(new MemoryGameDAO(), new MemoryUserDAO(), new MemoryAuthDAO());
         GameData game1 = new GameData();
         GameData game2 = new GameData();
         GameData game3 = new GameData();

@@ -28,4 +28,8 @@ public class MemoryUserDAO implements UserDAO{
         return userMap;
     }
 
+    @Override
+    public void clear() {
+        userMap.clear();
+    }
 }

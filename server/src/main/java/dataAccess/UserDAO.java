@@ -14,5 +14,7 @@ public interface UserDAO {
 
     HashMap getUserMap();
 
+    void clear();
+
 
 }
