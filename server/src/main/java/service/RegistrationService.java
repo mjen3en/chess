@@ -4,6 +4,7 @@ import dataAccess.AuthDAO;
 import dataAccess.UserDAO;
 import model.AuthData;
 import model.UserData;
+import result.RegisterResult;
 
 import java.util.HashSet;
 import java.util.UUID;
@@ -18,7 +19,7 @@ public class RegistrationService {
         userDAO = uDao;
     }
 
-    public String register(String username, String password, String email){
+    public RegisterResult register(String username, String password, String email){
         UserData userData = new UserData();
         userData.setUsername(username);
         userData.setPassword(password);
@@ -30,7 +31,8 @@ public class RegistrationService {
         userDAO.insertUser(userData);
 
         //create auth
-        return insertAuth(createAuth(username));
+        RegisterResult result = new RegisterResult(username, insertAuth(createAuth(username)));
+        return result;
     }
 
 
