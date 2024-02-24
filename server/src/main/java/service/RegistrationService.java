@@ -1,6 +1,7 @@
 package service;
 
 import dataAccess.AuthDAO;
+import dataAccess.DataAccessException;
 import dataAccess.UserDAO;
 import model.AuthData;
 import model.UserData;
@@ -19,14 +20,12 @@ public class RegistrationService {
         userDAO = uDao;
     }
 
-    public RegisterResult register(String username, String password, String email){
-        UserData userData = new UserData();
-        userData.setUsername(username);
-        userData.setPassword(password);
-        userData.setEmail(email);
+    public RegisterResult register(String username, String password, String email) throws DataAccessException{
+        UserData userData = new UserData(username, password, email);
         //get user
-        userDAO.getUser(userData);
-
+        if (userDAO.getUser(userData).username != null){
+            throw new DataAccessException("Already taken");
+        }
         //create user
         userDAO.insertUser(userData);
 

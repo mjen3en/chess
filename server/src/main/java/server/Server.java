@@ -35,11 +35,18 @@ public class Server {
     private Object register(Request request, Response response) {
         var gson = new Gson();
         RegisterRequest req = (RegisterRequest)gson.fromJson(request.body(), RegisterRequest.class);
-        RegisterResult result = registrationService.register(req.username(), req.password(), req.email());
-        response.status(200);
-        var serializer = new Gson();
-        var json = serializer.toJson(result);
-        return json;
+        try {
+            RegisterResult result = registrationService.register(req.username(), req.password(), req.email());
+            response.status(200);
+            var serializer = new Gson();
+            return serializer.toJson(result);
+        }
+        catch (DataAccessException ex){
+            response.status(403);
+            var serializer = new Gson();
+            return serializer.toJson(ex);
+        }
+
     }
 
 
