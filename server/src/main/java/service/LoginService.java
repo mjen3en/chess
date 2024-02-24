@@ -35,9 +35,13 @@ public class LoginService {
         return new LoginResult(request.username(), authDao.insertAuth(request.username()));
     }
 
-    public LogoutResult logout(LogoutRequest request, String authToken){
+    public LogoutResult logout(LogoutRequest request, String authToken) throws DataAccessException{
         //gets username from authMap
         AuthData authData = authDao.getAuthData(authToken);
+
+        if (authData == null){
+            throw new DataAccessException("not authorized");
+        }
 
         //removes auth from authMap
         authDao.deleteAuth(authToken);

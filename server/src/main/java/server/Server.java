@@ -39,9 +39,14 @@ public class Server {
         var gson = new Gson();
         LogoutRequest req = (LogoutRequest) gson.fromJson(request.body(), LogoutRequest.class);
         String authToken = request.headers("authorization");
-        LogoutResult result = loginService.logout(req, authToken);
-        response.status(200);
-        return gson.toJson(result);
+        try {
+            LogoutResult result = loginService.logout(req, authToken);
+            response.status(200);
+            return gson.toJson(result);
+        } catch (DataAccessException ex){
+            response.status(401);
+            return gson.toJson(ex.getMessage());
+        }
     }
 
     private Object login(Request request, Response response) {
