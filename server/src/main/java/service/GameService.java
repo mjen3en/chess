@@ -7,6 +7,7 @@ import dataAccess.GameDAO;
 import dataAccess.MemoryGameDAO;
 import dataAccess.UserDAO;
 import model.GameData;
+import result.ClearResult;
 
 public class GameService {
     //MemoryGameDAO gameDao = new MemoryGameDAO();
@@ -22,10 +23,13 @@ public class GameService {
         authDAO = aDAO;
     }
 
-    public void clear(){
+    public ClearResult clear(){
         gameDAO.clear();
         userDAO.clear();
         authDAO.clear();
+
+        return new ClearResult("");
+
     }
 
     public int createGame(){

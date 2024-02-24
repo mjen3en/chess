@@ -25,7 +25,7 @@ public class Server {
 
         // Register your endpoints and handle exceptions here.
         Spark.delete("/db", this::clear);
-        Spark.post("/db", this::register);
+        Spark.post("/user", this::register);
 
         Spark.awaitInitialization();
         return Spark.port();
@@ -37,7 +37,9 @@ public class Server {
         RegisterRequest req = (RegisterRequest)gson.fromJson(request.body(), RegisterRequest.class);
         RegisterResult result = registrationService.register(req.username(), req.password(), req.email());
         response.status(200);
-        return result;
+        var serializer = new Gson();
+        var json = serializer.toJson(result);
+        return json;
     }
 
 
@@ -47,12 +49,21 @@ public class Server {
     }
 
     private Object clear(Request request, Response response) {
-        gameService.clear();
+        var res = gameService.clear();
         response.status(200);
-        return "";
+        var serializer = new Gson();
+        var json = serializer.toJson(res);
+        return json;
+
     }
 
     public int port() {
         return Spark.port();
     }
 }
+
+//    private Object toJson(RegisterResult result){
+//        var serializer = new Gson();
+//        var json = serializer.toJson(result);
+//        return json;
+//    }
