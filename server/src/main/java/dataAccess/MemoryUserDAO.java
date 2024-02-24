@@ -32,4 +32,9 @@ public class MemoryUserDAO implements UserDAO{
     public void clear() {
         userMap.clear();
     }
+
+    @Override
+    public void deleteUser(String username) {
+        userMap.remove(username);
+    }
 }

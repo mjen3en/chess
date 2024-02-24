@@ -3,9 +3,12 @@ package service;
 import dataAccess.AuthDAO;
 import dataAccess.DataAccessException;
 import dataAccess.UserDAO;
+import model.AuthData;
 import model.UserData;
 import request.LoginRequest;
+import request.LogoutRequest;
 import result.LoginResult;
+import result.LogoutResult;
 
 public class LoginService {
 
@@ -29,7 +32,20 @@ public class LoginService {
         }
         //create authToken
         // create and return Login Result
-        return new LoginResult(request.username(), authDao.getAuth(request.username()));
+        return new LoginResult(request.username(), authDao.insertAuth(request.username()));
+    }
+
+    public LogoutResult logout(LogoutRequest request, String authToken){
+        //gets username from authMap
+        AuthData authData = authDao.getAuthData(authToken);
+
+        //removes auth from authMap
+        authDao.deleteAuth(authToken);
+
+        //removes username and Authdata from userMap
+        userDAO.deleteUser(authData.getUsername());
+
+        return new LogoutResult("{}");
     }
 
     private boolean checkPassword(LoginRequest request, UserData userData){

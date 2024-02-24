@@ -1,13 +1,14 @@
 package dataAccess;
 
 import model.AuthData;
+import model.UserData;
 
 import java.util.HashMap;
 import java.util.HashSet;
 
 public interface AuthDAO {
 
-    String getAuth(String username);
+    String insertAuth(String username);
 
     HashMap getAuthMap();
 
@@ -15,7 +16,11 @@ public interface AuthDAO {
 
     AuthData createAuthData(String username);
 
-    String getAuthToken();
+    String createAuthToken();
+
+    void deleteAuth(String authToken);
+
+    AuthData getAuthData(String authToken);
 
 
 }

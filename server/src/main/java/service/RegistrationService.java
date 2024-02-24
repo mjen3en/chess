@@ -31,7 +31,7 @@ public class RegistrationService {
         userDAO.insertUser(userData);
 
         //create auth
-        return new RegisterResult(request.username(), authDao.getAuth(request.username()));
+        return new RegisterResult(request.username(), authDao.insertAuth(request.username()));
     }
 
 

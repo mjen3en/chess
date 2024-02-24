@@ -16,5 +16,7 @@ public interface UserDAO {
 
     void clear();
 
+    void deleteUser(String username);
+
 
 }

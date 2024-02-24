@@ -29,9 +29,19 @@ public class Server {
         Spark.delete("/db", this::clear);
         Spark.post("/user", this::register);
         Spark.post("/session", this::login);
+        Spark.delete("/session", this::logout);
 
         Spark.awaitInitialization();
         return Spark.port();
+    }
+
+    private Object logout(Request request, Response response) {
+        var gson = new Gson();
+        LogoutRequest req = (LogoutRequest) gson.fromJson(request.body(), LogoutRequest.class);
+        String authToken = request.headers("authorization");
+        LogoutResult result = loginService.logout(req, authToken);
+        response.status(200);
+        return gson.toJson(result);
     }
 
     private Object login(Request request, Response response) {
