@@ -28,7 +28,7 @@ public class GameService {
         userDAO.clear();
         authDAO.clear();
 
-        return new ClearResult("");
+        return new ClearResult("{}");
 
     }
 

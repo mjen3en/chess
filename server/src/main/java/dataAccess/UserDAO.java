@@ -8,7 +8,7 @@ import java.util.HashSet;
 
 public interface UserDAO {
 
-    UserData getUser(UserData userData);
+    UserData getUser(String username);
 
     void insertUser(UserData userData);
 

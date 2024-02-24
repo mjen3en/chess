@@ -7,9 +7,15 @@ import java.util.HashSet;
 
 public interface AuthDAO {
 
-    void insertAuth(AuthData authData);
+    String getAuth(String username);
 
     HashMap getAuthMap();
 
     void clear();
+
+    AuthData createAuthData(String username);
+
+    String getAuthToken();
+
+
 }
