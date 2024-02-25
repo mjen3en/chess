@@ -2,12 +2,13 @@ package service;
 
 
 import chess.ChessGame;
-import dataAccess.AuthDAO;
-import dataAccess.GameDAO;
-import dataAccess.MemoryGameDAO;
-import dataAccess.UserDAO;
+import dataAccess.*;
 import model.GameData;
+import request.CreateGameRequest;
+import request.ListGamesRequest;
 import result.ClearResult;
+import result.CreateGameResult;
+import result.ListGamesResult;
 
 public class GameService {
     //MemoryGameDAO gameDao = new MemoryGameDAO();
@@ -32,14 +33,28 @@ public class GameService {
 
     }
 
-    public int createGame(){
+    public CreateGameResult createGame(CreateGameRequest request, String authToken) throws DataAccessException{
         //get authorization
-
+        if (!(authDAO.checkAuthToken(authToken))){
+            throw new DataAccessException("unauthorized");
+        }
         //create game
+        GameData game = new GameData(0,"", "", request.gameName(), new ChessGame());
+        //game.setGameName(request.gameName());
 
-        //insert game
+        //insert game and create game result with returned gameID
+        return new CreateGameResult(insertGame(game));
+    }
 
-        return 0;
+    public ListGamesResult listGames(ListGamesRequest request, String authToken) throws DataAccessException{
+        //get authorization
+        if (!(authDAO.checkAuthToken(authToken))){
+            throw new DataAccessException("unauthorized");
+        }
+
+        //get and return list of games
+        return new ListGamesResult(gameDAO.getGameList());
+
     }
 
     public int insertGame(GameData game){

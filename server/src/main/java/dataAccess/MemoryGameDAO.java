@@ -1,41 +1,44 @@
 package dataAccess;
 
-import chess.ChessGame;
 import model.GameData;
 
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 
 public class MemoryGameDAO  implements  GameDAO{
 
-    public static HashMap<Integer, GameData> games = new HashMap<>();
+    public static HashMap<Integer, GameData> gameMap = new HashMap<>();
     int numGames = 0;
 
     public HashMap getGameMap(){
-        return games;
+        return gameMap;
     }
-
 
 
     @Override
     public void clear() {
-        games.clear();
+        gameMap.clear();
     }
 
     @Override
     public GameData getGame(int gameID) {
-        return games.get(gameID);
+        return gameMap.get(gameID);
     }
 
     @Override
     public Integer insertGame(GameData gameData) {
         numGames++;
-        gameData.setGameId(numGames);
-        games.put(gameData.getGameId(), gameData);
-        return gameData.getGameId();
+        GameData newData = new GameData(numGames, gameData.getWhiteUsername(), gameData.getBlackUsername(), gameData.getGameName(), gameData.getGame());
+        gameMap.put(newData.getGameID(), newData);
+        return newData.getGameID();
+
+
     }
 
 
-
-
+    @Override
+    public List getGameList() {
+        return new ArrayList<GameData>(gameMap.values());
+    }
 }

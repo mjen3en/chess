@@ -2,23 +2,30 @@ package model;
 
 import chess.ChessGame;
 
+
 public class GameData {
 
-    public int gameId;
-    public String whiteUsername = "";
-    public String blackUsername = "";
-    public String gameName = "";
-    public ChessGame game = new ChessGame();
-
-
-
-
-    public int getGameId() {
-        return gameId;
+    public GameData(int gameID, String whiteUsername, String blackUsername, String gameName, ChessGame game) {
+        this.gameID = gameID;
+        this.whiteUsername = whiteUsername;
+        this.blackUsername = blackUsername;
+        this.gameName = gameName;
+        this.game = game;
     }
 
-    public void setGameId(int gameId) {
-        this.gameId = gameId;
+    int gameID;
+    String whiteUsername;
+    String blackUsername;
+    String gameName;
+    transient ChessGame game;
+
+
+    public int getGameID() {
+        return gameID;
+    }
+
+    public void setGameID(int gameID) {
+        this.gameID = gameID;
     }
 
     public String getWhiteUsername() {
@@ -49,9 +56,9 @@ public class GameData {
         return game;
     }
 
-
-
-
+    public void setGame(ChessGame game) {
+        this.game = game;
+    }
 
 
 }

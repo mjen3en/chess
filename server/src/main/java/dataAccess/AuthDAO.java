@@ -22,5 +22,7 @@ public interface AuthDAO {
 
     AuthData getAuthData(String authToken);
 
+    boolean checkAuthToken(String authToken);
+
 
 }

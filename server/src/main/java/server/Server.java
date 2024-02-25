@@ -30,9 +30,39 @@ public class Server {
         Spark.post("/user", this::register);
         Spark.post("/session", this::login);
         Spark.delete("/session", this::logout);
+        Spark.post("/game", this::creategame);
+        Spark.get("/game", this::listgames);
 
         Spark.awaitInitialization();
         return Spark.port();
+    }
+
+    private Object listgames(Request request, Response response) {
+        var gson = new Gson();
+        ListGamesRequest req = (ListGamesRequest)gson.fromJson(request.body(), ListGamesRequest.class);
+        String authToken = request.headers("authorization");
+        try {
+            ListGamesResult result = gameService.listGames(req, authToken);
+            response.status(200);
+            return gson.toJson(result);
+        } catch (DataAccessException ex){
+            response.status(401);
+            return gson.toJson(ex.getMessage());
+        }
+    }
+
+    private Object creategame(Request request, Response response) {
+        var gson = new Gson();
+        CreateGameRequest req = (CreateGameRequest)gson.fromJson(request.body(), CreateGameRequest.class);
+        String authToken = request.headers("authorization");
+        try {
+            CreateGameResult result = gameService.createGame(req, authToken);
+            response.status(200);
+            return gson.toJson(result);
+        } catch (DataAccessException ex){
+            response.status(401);
+            return gson.toJson(ex.getMessage());
+        }
     }
 
     private Object logout(Request request, Response response) {
@@ -99,8 +129,3 @@ public class Server {
     }
 }
 
-//    private Object toJson(RegisterResult result){
-//        var serializer = new Gson();
-//        var json = serializer.toJson(result);
-//        return json;
-//    }

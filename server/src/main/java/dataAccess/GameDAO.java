@@ -1,7 +1,5 @@
 package dataAccess;
 
-import chess.ChessGame;
-import model.AuthData;
 import model.GameData;
 
 import java.util.HashMap;
@@ -22,4 +20,6 @@ public interface GameDAO {
     void clear();
 
     HashMap getGameMap();
+
+    List getGameList();
 }

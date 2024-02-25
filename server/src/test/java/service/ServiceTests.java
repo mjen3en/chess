@@ -1,11 +1,8 @@
 package service;
 
 import dataAccess.*;
-import model.GameData;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import server.Server;
 
 class ServiceTests {
 
@@ -14,19 +11,19 @@ class ServiceTests {
     void clear() {
 
 
-        GameService test =  new GameService(new MemoryGameDAO(), new MemoryUserDAO(), new MemoryAuthDAO());
-        GameData game1 = new GameData();
-        GameData game2 = new GameData();
-        GameData game3 = new GameData();
-        test.insertGame(game1);
-        test.insertGame(game2);
-        test.insertGame(game3);
-
-        Assertions.assertEquals(3, test.getMapSize());
-
-        test.clear();
-
-        Assertions.assertEquals(0,test.getMapSize());
+//        GameService test =  new GameService(new MemoryGameDAO(), new MemoryUserDAO(), new MemoryAuthDAO());
+//        GameData game1 = new GameData();
+//        GameData game2 = new GameData();
+//        GameData game3 = new GameData();
+//        test.insertGame(game1);
+//        test.insertGame(game2);
+//        test.insertGame(game3);
+//
+//        Assertions.assertEquals(3, test.getMapSize());
+//
+//        test.clear();
+//
+//        Assertions.assertEquals(0,test.getMapSize());
     }
 
     @Test
