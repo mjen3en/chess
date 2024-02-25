@@ -17,7 +17,7 @@ public class GameData {
     String whiteUsername;
     String blackUsername;
     String gameName;
-    transient ChessGame game;
+    ChessGame game;
 
 
     public int getGameID() {

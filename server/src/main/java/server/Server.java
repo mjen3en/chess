@@ -32,9 +32,24 @@ public class Server {
         Spark.delete("/session", this::logout);
         Spark.post("/game", this::creategame);
         Spark.get("/game", this::listgames);
+        Spark.put("/game", this::joingame);
 
         Spark.awaitInitialization();
         return Spark.port();
+    }
+
+    private Object joingame(Request request, Response response) {
+        var gson = new Gson();
+        JoinGameRequest req = (JoinGameRequest)gson.fromJson(request.body(), JoinGameRequest.class);
+        String authToken = request.headers("authorization");
+        try {
+            JoinGameResult result = gameService.joinGame(req, authToken);
+            response.status(200);
+            return gson.toJson(result);
+        } catch (DataAccessException ex){
+            response.status(401);
+            return gson.toJson(ex.getMessage());
+        }
     }
 
     private Object listgames(Request request, Response response) {

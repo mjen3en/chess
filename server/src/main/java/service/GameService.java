@@ -5,10 +5,14 @@ import chess.ChessGame;
 import dataAccess.*;
 import model.GameData;
 import request.CreateGameRequest;
+import request.JoinGameRequest;
 import request.ListGamesRequest;
 import result.ClearResult;
 import result.CreateGameResult;
+import result.JoinGameResult;
 import result.ListGamesResult;
+
+import java.util.Objects;
 
 public class GameService {
     //MemoryGameDAO gameDao = new MemoryGameDAO();
@@ -54,6 +58,30 @@ public class GameService {
 
         //get and return list of games
         return new ListGamesResult(gameDAO.getGameList());
+
+    }
+
+    public JoinGameResult joinGame(JoinGameRequest request, String authToken) throws DataAccessException{
+        //check authorization
+        if (!(authDAO.checkAuthToken(authToken))){
+            throw new DataAccessException("unauthorized");
+        }
+        // get username
+        String username = authDAO.getAuthData(authToken).getUsername();
+
+        //get game
+       var updatedGame = gameDAO.getGame(request.gameID());
+
+        //join game
+        if (Objects.equals(request.playerColor(), "WHITE")) {
+            updatedGame.setWhiteUsername(username);
+        } else if (Objects.equals(request.playerColor(), "BLACK")){
+            updatedGame.setBlackUsername(username);
+        }
+
+        //update game
+        gameDAO.updateGame(updatedGame);
+        return new JoinGameResult();
 
     }
 

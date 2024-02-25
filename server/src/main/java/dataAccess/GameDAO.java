@@ -22,4 +22,6 @@ public interface GameDAO {
     HashMap getGameMap();
 
     List getGameList();
+
+    void updateGame(GameData gameData);
 }

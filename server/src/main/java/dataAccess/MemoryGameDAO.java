@@ -41,4 +41,9 @@ public class MemoryGameDAO  implements  GameDAO{
     public List getGameList() {
         return new ArrayList<GameData>(gameMap.values());
     }
+
+    @Override
+    public void updateGame(GameData gameData) {
+        gameMap.put(gameData.getGameID(), gameData);
+    }
 }
