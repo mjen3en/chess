@@ -61,17 +61,6 @@ public class ChessGame {
      * startPosition
      */
     public Collection<ChessMove> validMoves(ChessPosition startPosition)  {
-//        TeamColor color = board.getPiece(startPosition).getTeamColor();
-//        if (color != turn){
-//            throw new InvalidMoveException();
-//        }
-        HashMap teamHashMap;
-//        if (color == TeamColor.BLACK){
-//            teamHashMap = whitePieces;
-//            kingPosition = getKingPosition(blackPieces);
-//        } else {
-//            teamHashMap = blackPieces;
-//        }
         ChessPiece currentPiece = board.getPiece(startPosition);
         HashSet<ChessMove> moves = new HashSet<ChessMove>();
         if (currentPiece == null ) {
@@ -155,12 +144,6 @@ public class ChessGame {
         if (kingPosition == null){
             return false;
         }
-//        HashSet<ChessPosition> allTeamMoves = new HashSet<ChessPosition>();
-//        for (Map.Entry<ChessPosition, ChessPiece> set: teamHashMap.entrySet()){
-//            Set<ChessPosition> allPieceMoves = new HashSet<ChessPosition>();
-//            allPieceMoves.addAll(getAllEndPositions(set.getValue().pieceMoves(board, set.getKey())));
-//            allTeamMoves.addAll(allPieceMoves);
-//        }
 
 
 
@@ -347,7 +330,4 @@ public class ChessGame {
 
     }
 
-    public HashMap<ChessPosition, ChessPiece> getBlackMap (){
-        return blackPieces;
-    }
 }

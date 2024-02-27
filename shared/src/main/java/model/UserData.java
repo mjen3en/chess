@@ -33,9 +33,9 @@ public class UserData {
         this.email = email;
     }
 
-    public String username = "";
+    public String username;
 
-    public String password = "";
+    public String password;
 
-    public String email = "";
+    public String email;
 }

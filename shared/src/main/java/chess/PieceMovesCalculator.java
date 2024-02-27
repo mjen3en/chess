@@ -42,13 +42,11 @@ public class PieceMovesCalculator {
 
     public Collection BishopMovesCalculator(ChessBoard board, ChessPosition myPosition){
         var validMoves = new HashSet<ChessMove>();
-        //ChessPosition checkMyPosition = new ChessPosition(myPosition.getRow() -1, myPosition.getColumn()-1);
         //row increasing, column increasing
         for (int i = 1; i < 8; i++){
             if(myPosition.getRow()+i == 8 || myPosition.getColumn()+i == 8){
                 break;}
             ChessPosition checkPosition = new ChessPosition(myPosition.getRow()+i+1,myPosition.getColumn()+i+1);
-            //ChessPosition nextPosition = new ChessPosition(myPosition.getRow()+i,myPosition.getColumn()+i);
             if (board.getPiece(checkPosition) != null) {  //causes problems with index out of range
                 if (board.getPiece(checkPosition).getTeamColor() != board.getPiece(myPosition).getTeamColor()){
                     validMoves.add(new ChessMove(myPosition, checkPosition, null));
@@ -68,7 +66,6 @@ public class PieceMovesCalculator {
             if(myPosition.getRow()-i == -1 ||  myPosition.getColumn()+i == 8){
                 break;}
             ChessPosition checkPosition = new ChessPosition(myPosition.getRow()-i+1,myPosition.getColumn()+i+1);
-            //ChessPosition nextPosition = new ChessPosition(myPosition.getRow()-i,myPosition.getColumn()+i);
             if (board.getPiece(checkPosition) != null) {  //causes problems with index out of range
                 if (board.getPiece(checkPosition).getTeamColor() != board.getPiece(myPosition).getTeamColor()){
                     validMoves.add(new ChessMove(myPosition, checkPosition, null));
@@ -105,7 +102,6 @@ public class PieceMovesCalculator {
             if(myPosition.getRow()-i == -1 ||myPosition.getColumn()-i == -1){
                 break;}
             ChessPosition checkPosition = new ChessPosition(myPosition.getRow()-i+1,myPosition.getColumn()-i+1);
-            //ChessPosition nextPosition = new ChessPosition(myPosition.getRow()-i,myPosition.getColumn()-i);
             if (board.getPiece(checkPosition) != null) {  //checks if space has a piece
                 if (board.getPiece(checkPosition).getTeamColor() != board.getPiece(myPosition).getTeamColor()){ //checks if piece is enemy
                     validMoves.add(new ChessMove(myPosition, checkPosition, null));
@@ -247,21 +243,6 @@ public class PieceMovesCalculator {
             validMoves.add(move8);
         }
 
-
-        /*if (board.getPiece(topRight) == null || board.getPiece(topRight).getTeamColor() != board.getPiece(myPosition).getTeamColor()){
-            validMoves.add(new ChessMove(myPosition, topRight, null));
-        }
-        ChessPosition topLeft = new ChessPosition(rowAdjusted + 2, colAdjusted - 1);
-        if (board.getPiece(topLeft) == null || board.getPiece(topLeft).getTeamColor() != board.getPiece(myPosition).getTeamColor()){
-            validMoves.add(new ChessMove(myPosition, topLeft, null));
-        }
-        ChessPosition rightTop = new ChessPosition(rowAdjusted + 1, colAdjusted + 2);
-        if (board.getPiece(rightTop) == null || board.getPiece(rightTop).getTeamColor() != board.getPiece(myPosition).getTeamColor()){
-            validMoves.add(new ChessMove(myPosition, topLeft, null));
-        }*/
-
-
-
         return validMoves;
     }
 
@@ -349,7 +330,6 @@ public class PieceMovesCalculator {
 
     public Collection RookMovesCalculator(ChessBoard board, ChessPosition myPosition){
         var validMoves = new HashSet<ChessMove>();
-        //ChessPosition checkMyPosition = new ChessPosition(myPosition.getRow() -1, myPosition.getColumn()-1);
         //row increasing,
 
         int rowAdjusted = myPosition.getRow() +1;
@@ -359,7 +339,6 @@ public class PieceMovesCalculator {
             if(myPosition.getRow()+i == 8){
                 break;}
             ChessPosition checkPosition = new ChessPosition(rowAdjusted + i ,colAdjusted);
-            //ChessPosition nextPosition = new ChessPosition(myPosition.getRow()+i,myPosition.getColumn()+i);
             if (board.getPiece(checkPosition) != null) {  //causes problems with index out of range
                 if (board.getPiece(checkPosition).getTeamColor() != board.getPiece(myPosition).getTeamColor()){
                     validMoves.add(new ChessMove(myPosition, checkPosition, null));
@@ -397,7 +376,6 @@ public class PieceMovesCalculator {
             if(myPosition.getColumn()-i  == -1){
                 break;}
             ChessPosition checkPosition = new ChessPosition(rowAdjusted,colAdjusted - i);
-            //ChessPosition nextPosition = new ChessPosition(myPosition.getRow()+i,myPosition.getColumn()-i);
             if (board.getPiece(checkPosition) != null) {  //causes problems with index out of range
                 if (board.getPiece(checkPosition).getTeamColor() != board.getPiece(myPosition).getTeamColor()){
                     validMoves.add(new ChessMove(myPosition, checkPosition, null));
