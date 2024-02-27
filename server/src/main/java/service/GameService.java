@@ -42,9 +42,13 @@ public class GameService {
         if (!(authDAO.checkAuthToken(authToken))){
             throw new DataAccessException("Error: unauthorized");
         }
+
+        if (request.gameName() == null){
+            throw new DataAccessException("Error: bad request");
+        }
+
         //create game
         GameData game = new GameData(0,null, null, request.gameName(), new ChessGame());
-        //game.setGameName(request.gameName());
 
         //insert game and create game result with returned gameID
         return new CreateGameResult(insertGame(game));
@@ -71,6 +75,7 @@ public class GameService {
         if (!(gameDAO.checkIfGameExists(request.gameID()))){
             throw new DataAccessException("Error: bad request");
         }
+
 
         // get username
         String username = authDAO.getAuthData(authToken).getUsername();

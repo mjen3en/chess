@@ -11,6 +11,10 @@ public class MemoryGameDAO  implements  GameDAO{
     public static HashMap<Integer, GameData> gameMap = new HashMap<>();
     int numGames = 0;
 
+    public MemoryGameDAO(){
+        gameMap.clear();
+    }
+
     public HashMap getGameMap(){
         return gameMap;
     }

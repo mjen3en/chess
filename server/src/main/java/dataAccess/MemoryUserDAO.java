@@ -11,6 +11,10 @@ public class MemoryUserDAO implements UserDAO{
 
     public static HashMap<String, UserData> userMap = new HashMap<>();
 
+    public MemoryUserDAO() {
+        userMap.clear();
+    }
+
 
     @Override
     public UserData getUser(String username) {

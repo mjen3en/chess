@@ -9,6 +9,10 @@ import java.util.UUID;
 public class MemoryAuthDAO implements AuthDAO{
 
     public static HashMap<String, AuthData> authMap = new HashMap<>();
+
+    public MemoryAuthDAO() {
+        authMap.clear();
+    }
     @Override
     public String insertAuth(String username) {
         AuthData authData = createAuthData(username);
