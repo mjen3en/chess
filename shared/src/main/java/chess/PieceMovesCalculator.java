@@ -20,14 +20,9 @@ public class PieceMovesCalculator {
 
 
 
-
-    /*public Collection pieceMoves(ChessBoard board, ChessPosition myPosition){
-
-    }*/
+    
 
     public PieceMovesCalculator(ChessBoard board, ChessPosition myPosition){
-        /*pieceColor = board.getPiece(myPosition).getTeamColor();
-        type = board.getPiece(myPosition).getPieceType();*/
         myBoard = board;
         thisPosition = myPosition;
 
@@ -40,7 +35,7 @@ public class PieceMovesCalculator {
     }
 
 
-    public Collection BishopMovesCalculator(ChessBoard board, ChessPosition myPosition){
+    public Collection bishopMovesCalculator(ChessBoard board, ChessPosition myPosition){
         var validMoves = new HashSet<ChessMove>();
         //row increasing, column increasing
         for (int i = 1; i < 8; i++){
@@ -121,7 +116,7 @@ public class PieceMovesCalculator {
 
     }
 
-    public Collection KingMovesCalculator(ChessBoard board, ChessPosition myPosition){
+    public Collection kingMovesCalculator(ChessBoard board, ChessPosition myPosition){
         var validMoves = new HashSet<ChessMove>();
 
         if (!(myPosition.getRow() + 1 == 8)){
@@ -202,7 +197,7 @@ public class PieceMovesCalculator {
         return validMoves;
     }
 
-    public Collection KnightMovesCalculator(ChessBoard board, ChessPosition myPosition){
+    public Collection knightMovesCalculator(ChessBoard board, ChessPosition myPosition){
         var validMoves = new HashSet<ChessMove>();
         int rowAdjusted = myPosition.getRow() + 1;
         int colAdjusted = myPosition.getColumn() + 1;
@@ -256,7 +251,7 @@ public class PieceMovesCalculator {
         return null;
     }
 
-    public Collection PawnMovesCalculator(ChessBoard board, ChessPosition myPosition){
+    public Collection pawnMovesCalculator(ChessBoard board, ChessPosition myPosition){
         var validMoves = new HashSet<ChessMove>();
         int i = 1;
         if (board.getPiece(myPosition).getTeamColor() == ChessGame.TeamColor.BLACK){
@@ -328,7 +323,7 @@ public class PieceMovesCalculator {
 
     }
 
-    public Collection RookMovesCalculator(ChessBoard board, ChessPosition myPosition){
+    public Collection rookMovesCalculator(ChessBoard board, ChessPosition myPosition){
         var validMoves = new HashSet<ChessMove>();
         //row increasing,
 
@@ -414,7 +409,7 @@ public class PieceMovesCalculator {
 
     }
 
-    public Collection<ChessMove> QueenMovesCalculator(ChessBoard board, ChessPosition myPosition){
+    public Collection<ChessMove> queenMovesCalculator(ChessBoard board, ChessPosition myPosition){
         var validMoves = new HashSet<ChessMove>();
 
         validMoves.addAll(RookMovesCalculator(board, myPosition));

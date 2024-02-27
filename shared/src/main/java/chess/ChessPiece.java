@@ -58,26 +58,26 @@ public class ChessPiece {
         ChessPosition boardPosition = new ChessPosition(myPosition.getRow(), myPosition.getColumn());
         PieceMovesCalculator moves = new PieceMovesCalculator(board, boardPosition);
         if (type == PieceType.BISHOP) {
-            return moves.BishopMovesCalculator(board, myPosition);
+            return moves.bishopMovesCalculator(board, myPosition);
 
         }
         if (type == PieceType.KING){
-            return moves.KingMovesCalculator(board, myPosition);
+            return moves.kingMovesCalculator(board, myPosition);
         }
 
         if (type == PieceType.KNIGHT){
-            return moves.KnightMovesCalculator(board, myPosition);
+            return moves.knightMovesCalculator(board, myPosition);
         }
 
         if (type == PieceType.PAWN){
-            return moves.PawnMovesCalculator(board, myPosition);
+            return moves.pawnMovesCalculator(board, myPosition);
         }
 
         if (type == PieceType.ROOK){
-            return moves.RookMovesCalculator(board, myPosition);
+            return moves.rookMovesCalculator(board, myPosition);
         }
         if (type == PieceType.QUEEN){
-            return moves.QueenMovesCalculator(board, myPosition);
+            return moves.queenMovesCalculator(board, myPosition);
         }
 
         return new ArrayList<>();

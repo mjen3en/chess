@@ -99,15 +99,6 @@ public class ChessBoard {
         }
     }
 
-//    public void addPieceMap(ChessPosition position, ChessPiece piece){
-//        ChessGame.TeamColor color = piece.getTeamColor();
-//        if (color == ChessGame.TeamColor.BLACK){
-//            .put(position, piece);
-//        } else{
-//            whitePieces.put(position, piece);
-//        }
-//
-//    }
 
     @Override
     public boolean equals(Object o) {
