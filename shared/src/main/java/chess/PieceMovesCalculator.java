@@ -20,7 +20,7 @@ public class PieceMovesCalculator {
 
 
 
-    
+
 
     public PieceMovesCalculator(ChessBoard board, ChessPosition myPosition){
         myBoard = board;
@@ -412,8 +412,8 @@ public class PieceMovesCalculator {
     public Collection<ChessMove> queenMovesCalculator(ChessBoard board, ChessPosition myPosition){
         var validMoves = new HashSet<ChessMove>();
 
-        validMoves.addAll(RookMovesCalculator(board, myPosition));
-        validMoves.addAll(BishopMovesCalculator(board, myPosition));
+        validMoves.addAll(rookMovesCalculator(board, myPosition));
+        validMoves.addAll(bishopMovesCalculator(board, myPosition));
 
 
         return validMoves;
