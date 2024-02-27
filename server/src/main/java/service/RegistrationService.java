@@ -22,10 +22,14 @@ public class RegistrationService {
     }
 
     public RegisterResult register(RegisterRequest request) throws DataAccessException{
+        if (request.username() == null || request.password() == null || request.email() == null){
+            throw new DataAccessException("Error: bad request");
+        }
+
         UserData userData = new UserData(request.username(), request.password(), request.email());
         //get user
         if (userDAO.getUser(userData.username) != null){
-            throw new DataAccessException("Already taken");
+            throw new DataAccessException("Error: already taken");
         }
         //create user
         userDAO.insertUser(userData);

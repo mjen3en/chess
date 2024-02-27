@@ -9,6 +9,8 @@ import service.LoginService;
 import service.RegistrationService;
 import spark.*;
 
+import java.util.Objects;
+
 public class Server {
 
     GameDAO gDao = new MemoryGameDAO();
@@ -47,8 +49,8 @@ public class Server {
             response.status(200);
             return gson.toJson(result);
         } catch (DataAccessException ex){
-            response.status(401);
-            return gson.toJson(ex.getMessage());
+            setResponseCode(ex, response);
+            return gson.toJson(new JsonErrorMessage(ex.getMessage()));
         }
     }
 
@@ -61,8 +63,8 @@ public class Server {
             response.status(200);
             return gson.toJson(result);
         } catch (DataAccessException ex){
-            response.status(401);
-            return gson.toJson(ex.getMessage());
+            setResponseCode(ex, response);
+            return gson.toJson(new JsonErrorMessage(ex.getMessage()));
         }
     }
 
@@ -75,8 +77,8 @@ public class Server {
             response.status(200);
             return gson.toJson(result);
         } catch (DataAccessException ex){
-            response.status(401);
-            return gson.toJson(ex.getMessage());
+            setResponseCode(ex, response);
+            return gson.toJson(new JsonErrorMessage(ex.getMessage()));
         }
     }
 
@@ -89,8 +91,8 @@ public class Server {
             response.status(200);
             return gson.toJson(result);
         } catch (DataAccessException ex){
-            response.status(401);
-            return gson.toJson(ex.getMessage());
+            setResponseCode(ex, response);
+            return gson.toJson(new JsonErrorMessage(ex.getMessage()));
         }
     }
 
@@ -103,8 +105,8 @@ public class Server {
             return gson.toJson(result);
         }
         catch (DataAccessException ex) {
-            response.status(401);
-            return gson.toJson(ex.getMessage());
+            setResponseCode(ex, response);
+            return gson.toJson(new JsonErrorMessage(ex.getMessage()));
         }
     }
 
@@ -118,8 +120,8 @@ public class Server {
             return gson.toJson(result);
         }
         catch (DataAccessException ex){
-            response.status(403);
-            return gson.toJson(ex.getMessage());
+            setResponseCode(ex, response);
+            return gson.toJson(new JsonErrorMessage(ex.getMessage()));
         }
 
     }
@@ -141,6 +143,18 @@ public class Server {
 
     public int port() {
         return Spark.port();
+    }
+
+    private void setResponseCode(DataAccessException ex, Response response){
+        if (Objects.equals(ex.getMessage(), "Error: bad request")) {
+            response.status(400);
+        } else if (Objects.equals(ex.getMessage(), "Error: already taken")){
+            response.status(403);
+        } else if (Objects.equals(ex.getMessage(), "Error: unauthorized")){
+            response.status(401);
+        } else {
+            response.status(500);
+        }
     }
 }
 

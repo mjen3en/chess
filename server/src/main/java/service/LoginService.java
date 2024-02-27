@@ -26,9 +26,9 @@ public class LoginService {
 
         //check password
         if (userData == null) {
-            throw new DataAccessException("unauthorized");
+            throw new DataAccessException("Error: unauthorized");
         } else if (!(checkPassword(request, userData))) {
-            throw new DataAccessException("unauthorized");
+            throw new DataAccessException("Error: unauthorized");
         }
         //create authToken
         // create and return Login Result
@@ -40,7 +40,7 @@ public class LoginService {
         AuthData authData = authDao.getAuthData(authToken);
 
         if (authData == null){
-            throw new DataAccessException("not authorized");
+            throw new DataAccessException("Error: unauthorized");
         }
 
         //removes auth from authMap

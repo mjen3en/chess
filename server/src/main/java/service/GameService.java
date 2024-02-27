@@ -40,10 +40,10 @@ public class GameService {
     public CreateGameResult createGame(CreateGameRequest request, String authToken) throws DataAccessException{
         //get authorization
         if (!(authDAO.checkAuthToken(authToken))){
-            throw new DataAccessException("unauthorized");
+            throw new DataAccessException("Error: unauthorized");
         }
         //create game
-        GameData game = new GameData(0,"", "", request.gameName(), new ChessGame());
+        GameData game = new GameData(0,null, null, request.gameName(), new ChessGame());
         //game.setGameName(request.gameName());
 
         //insert game and create game result with returned gameID
@@ -53,7 +53,7 @@ public class GameService {
     public ListGamesResult listGames(ListGamesRequest request, String authToken) throws DataAccessException{
         //get authorization
         if (!(authDAO.checkAuthToken(authToken))){
-            throw new DataAccessException("unauthorized");
+            throw new DataAccessException("Error: unauthorized");
         }
 
         //get and return list of games
@@ -64,8 +64,14 @@ public class GameService {
     public JoinGameResult joinGame(JoinGameRequest request, String authToken) throws DataAccessException{
         //check authorization
         if (!(authDAO.checkAuthToken(authToken))){
-            throw new DataAccessException("unauthorized");
+            throw new DataAccessException("Error: unauthorized");
         }
+
+        //check if game exists
+        if (!(gameDAO.checkIfGameExists(request.gameID()))){
+            throw new DataAccessException("Error: bad request");
+        }
+
         // get username
         String username = authDAO.getAuthData(authToken).getUsername();
 
@@ -73,11 +79,7 @@ public class GameService {
        var updatedGame = gameDAO.getGame(request.gameID());
 
         //join game
-        if (Objects.equals(request.playerColor(), "WHITE")) {
-            updatedGame.setWhiteUsername(username);
-        } else if (Objects.equals(request.playerColor(), "BLACK")){
-            updatedGame.setBlackUsername(username);
-        }
+        setColor(request, updatedGame, username);
 
         //update game
         gameDAO.updateGame(updatedGame);
@@ -91,5 +93,21 @@ public class GameService {
 
     public int getMapSize(){
         return gameDAO.getGameMap().size();
+    }
+
+    private void setColor(JoinGameRequest request, GameData updatedGame, String username) throws DataAccessException{
+        if (Objects.equals(request.playerColor(), "WHITE")) {
+            if (!(Objects.equals(updatedGame.getWhiteUsername(),null))){
+                throw new DataAccessException("Error: already taken");
+            }
+            updatedGame.setWhiteUsername(username);
+        } else if (Objects.equals(request.playerColor(), "BLACK")){
+            if (!(Objects.equals(updatedGame.getBlackUsername(),null))){
+                throw new DataAccessException("Error: already taken");
+            }
+            updatedGame.setBlackUsername(username);
+        } else if (!(Objects.equals(request.playerColor(), null))){
+            throw new DataAccessException("Error: bad request");
+        }
     }
 }

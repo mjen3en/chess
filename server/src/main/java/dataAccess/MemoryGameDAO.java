@@ -46,4 +46,12 @@ public class MemoryGameDAO  implements  GameDAO{
     public void updateGame(GameData gameData) {
         gameMap.put(gameData.getGameID(), gameData);
     }
+
+    @Override
+    public boolean checkIfGameExists(int gameId) {
+        if (gameMap.get(gameId) != null){
+            return true;
+        }
+        return false;
+    }
 }
