@@ -115,7 +115,7 @@ public class PieceMovesCalculator {
         var validMoves = new HashSet<ChessMove>();
         int rowAdjusted = myPosition.getRow() + 1;
         int colAdjusted = myPosition.getColumn() + 1;
-        if (!(colAdjusted == 8 || colAdjusted == 1)) {
+        if (!(rowAdjusted == 8 || rowAdjusted == 1)) {
             ChessPosition newPositionUp = new ChessPosition(rowAdjusted + f, colAdjusted + 1);
             ChessPosition newPositionCen = new ChessPosition(rowAdjusted + f, colAdjusted);
             ChessPosition newPositionDown = new ChessPosition(rowAdjusted + f, colAdjusted - 1);
@@ -195,7 +195,7 @@ public class PieceMovesCalculator {
         int colAdjusted = myPosition.getColumn() + 1;
         ChessGame.TeamColor myColor = board.getPiece(myPosition).getTeamColor();
 
-        if (rowAdjusted + i != 9 && rowAdjusted + i != 0 && colAdjusted + f != 9 && colAdjusted + f != 9) { //checks space in front
+        if (rowAdjusted + i != 9 && rowAdjusted + i != 0 && colAdjusted + f != 9 && colAdjusted + f != 0) { //checks space in front
             ChessPosition newPosition = new ChessPosition(rowAdjusted + i, colAdjusted + f);
             if ((f != 0 && board.getPiece(newPosition) == null) || (f == 0 && board.getPiece(newPosition) != null)) {
                 return validMoves;
