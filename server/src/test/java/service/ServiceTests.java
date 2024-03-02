@@ -7,12 +7,7 @@ import model.UserData;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import request.*;
-import result.ListGamesResult;
-
-import javax.xml.crypto.Data;
-import java.awt.*;
 import java.util.HashMap;
-import java.util.HashSet;
 
 class ServiceTests {
 
