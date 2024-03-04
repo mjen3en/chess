@@ -28,7 +28,7 @@ public class GameService {
         authDAO = aDAO;
     }
 
-    public ClearResult clear(){
+    public ClearResult clear() throws DataAccessException{
         gameDAO.clear();
         userDAO.clear();
         authDAO.clear();

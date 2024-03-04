@@ -30,16 +30,14 @@ public class MemoryAuthDAO implements AuthDAO{
         authMap.clear();
     }
 
-    @Override
-    public AuthData createAuthData(String username) {
+    private AuthData createAuthData(String username) {
         AuthData aData = new AuthData();
         aData.setUsername(username);
         aData.setAuthToken(createAuthToken());
         return aData;
     }
 
-    @Override
-    public String createAuthToken(){
+    private String createAuthToken(){
         return UUID.randomUUID().toString();
     }
 

@@ -14,11 +14,14 @@ import java.util.Objects;
 public class Server {
 
     GameDAO gDao = new MemoryGameDAO();
-    AuthDAO aDao = new MemoryAuthDAO();
-    UserDAO uDao = new MemoryUserDAO();
+    AuthDAO aDao = new MySQLAuthDAO();
+    UserDAO uDao = new MySQLUserDAO();
     GameService gameService = new GameService(gDao, uDao, aDao);
     RegistrationService registrationService = new RegistrationService(aDao, uDao);
     LoginService loginService = new LoginService(aDao, uDao);
+
+    public Server() throws DataAccessException {
+    }
 
 
     public int run(int desiredPort) {
@@ -132,7 +135,7 @@ public class Server {
         Spark.awaitStop();
     }
 
-    private Object clear(Request request, Response response) {
+    private Object clear(Request request, Response response) throws DataAccessException{
         var res = gameService.clear();
         response.status(200);
         var serializer = new Gson();

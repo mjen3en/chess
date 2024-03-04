@@ -8,15 +8,11 @@ import java.util.HashSet;
 
 public interface AuthDAO {
 
-    String insertAuth(String username);
+    String insertAuth(String username) throws DataAccessException;
 
     HashMap getAuthMap();
 
-    void clear();
-
-    AuthData createAuthData(String username);
-
-    String createAuthToken();
+    void clear() throws DataAccessException;
 
     void deleteAuth(String authToken);
 

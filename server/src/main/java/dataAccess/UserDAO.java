@@ -10,11 +10,11 @@ public interface UserDAO {
 
     UserData getUser(String username);
 
-    void insertUser(UserData userData);
+    void insertUser(UserData userData) throws DataAccessException;
 
     HashMap getUserMap();
 
-    void clear();
+    void clear() throws DataAccessException;
 
     void deleteUser(String username);
 
