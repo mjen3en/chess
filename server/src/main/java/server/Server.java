@@ -13,14 +13,23 @@ import java.util.Objects;
 
 public class Server {
 
-    GameDAO gDao = new MemoryGameDAO();
-    AuthDAO aDao = new MySQLAuthDAO();
-    UserDAO uDao = new MySQLUserDAO();
+    GameDAO gDao;
+    AuthDAO aDao;
+    UserDAO uDao;
+
     GameService gameService = new GameService(gDao, uDao, aDao);
     RegistrationService registrationService = new RegistrationService(aDao, uDao);
     LoginService loginService = new LoginService(aDao, uDao);
 
-    public Server() throws DataAccessException {
+
+    public Server() {
+        try {
+            this.gDao = new MemoryGameDAO();
+            this.aDao = new MySQLAuthDAO();
+            this.uDao = new MySQLUserDAO();
+        } catch (Exception ex){
+            System.out.printf("Unable to start server: %s%n", ex.getMessage());
+        }
     }
 
 
