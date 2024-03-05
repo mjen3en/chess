@@ -16,9 +16,9 @@ public interface AuthDAO {
 
     void deleteAuth(String authToken);
 
-    AuthData getAuthData(String authToken);
+    AuthData getAuthData(String authToken) throws DataAccessException;
 
-    boolean checkAuthToken(String authToken);
+    boolean checkAuthToken(String authToken) throws DataAccessException;
 
 
 

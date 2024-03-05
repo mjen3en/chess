@@ -1,5 +1,7 @@
 package dataAccessTests;
 
+import model.AuthData;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import dataAccess.*;
@@ -32,7 +34,19 @@ class MySQLAuthDAOTest {
     }
 
     @Test
-    void insertAuthTest() {
+    void insertAuthTestPositive() {
+        var test = assertDoesNotThrow(() ->new MySQLAuthDAO());
+        assertDoesNotThrow(() -> test.insertAuth("micah"));
+
+    }
+
+    @Test
+    void insertAuthTestNegative() {
+        var test = assertDoesNotThrow(() ->new MySQLAuthDAO());
+        assertDoesNotThrow(() -> test.insertAuth("micah"));
+        var ex = Assertions.assertThrows(DataAccessException.class, ()->test.insertAuth("micah")) ;
+        Assertions.assertEquals(ex.getMessage(), "unable to update database: %s, %s");
+
     }
 
     @Test
@@ -40,7 +54,23 @@ class MySQLAuthDAOTest {
     }
 
     @Test
-    void getAuthData() {
+    void getAuthDataPositive() {
+        var test = assertDoesNotThrow(() ->new MySQLAuthDAO());
+        String testToken = assertDoesNotThrow(() -> test.insertAuth("micah"));
+        AuthData expected = new AuthData();
+        expected.setUsername("micah");
+        expected.setAuthToken(testToken);
+        var result = assertDoesNotThrow(() -> test.getAuthData(testToken));
+        Assertions.assertEquals(expected.getAuthToken(), result.getAuthToken());
+        Assertions.assertEquals(expected.getUsername(), result.getUsername());
+    }
+
+    @Test
+    void getAuthDataNegative() {
+        var test = assertDoesNotThrow(() ->new MySQLAuthDAO());
+        var actual = Assertions.assertDoesNotThrow(()-> test.getAuthData("fakeAuthString"));
+        Assertions.assertEquals(null, actual);
+
     }
 
     @Test
@@ -48,6 +78,18 @@ class MySQLAuthDAOTest {
     }
 
     @Test
-    void checkAuthToken() {
+    void checkAuthTokenPositive() {
+        var test = assertDoesNotThrow(() ->new MySQLAuthDAO());
+        String testToken = assertDoesNotThrow(() -> test.insertAuth("micah"));
+        boolean testCheck = assertDoesNotThrow(() -> test.checkAuthToken(testToken));
+        Assertions.assertEquals(true, testCheck);
+    }
+
+    @Test
+    void checkAuthTokenNegative() {
+        var test = assertDoesNotThrow(() ->new MySQLAuthDAO());
+        String testToken = "fakeString";
+        boolean testCheck = assertDoesNotThrow(() -> test.checkAuthToken(testToken));
+        Assertions.assertEquals(false, testCheck);
     }
 }
