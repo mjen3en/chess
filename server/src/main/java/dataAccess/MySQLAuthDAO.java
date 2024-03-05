@@ -31,8 +31,21 @@ public class MySQLAuthDAO implements  AuthDAO{
     }
 
     @Override
-    public HashMap getAuthMap() {
-        return null;
+    public HashMap getAuthMap() throws DataAccessException {
+        var map = new HashMap<String, AuthData>();
+        try (var conn = DatabaseManager.getConnection()) {
+            var statement = "SELECT authtoken, username FROM auth";
+            try (var ps = conn.prepareStatement(statement)) {
+                try (var rs = ps.executeQuery()) {
+                    while (rs.next()) {
+                        map.put(rs.getString("authtoken"), readAuth(rs));
+                    }
+                }
+            }
+        } catch (Exception e) {
+            throw new DataAccessException(String.format("Unable to read data: %s", e.getMessage()));
+        }
+        return map;
     }
 
     @Override
@@ -54,8 +67,9 @@ public class MySQLAuthDAO implements  AuthDAO{
     }
 
     @Override
-    public void deleteAuth(String authToken) {
-
+    public void deleteAuth(String authToken) throws DataAccessException {
+        var statement = "DELETE FROM auth WHERE authtoken=?";
+        executeUpdate(statement, authToken);
     }
 
     @Override

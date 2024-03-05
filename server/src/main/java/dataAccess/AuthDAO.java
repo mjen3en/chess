@@ -10,11 +10,11 @@ public interface AuthDAO {
 
     String insertAuth(String username) throws DataAccessException;
 
-    HashMap getAuthMap();
+    HashMap getAuthMap() throws DataAccessException;
 
     void clear() throws DataAccessException;
 
-    void deleteAuth(String authToken);
+    void deleteAuth(String authToken) throws DataAccessException;
 
     AuthData getAuthData(String authToken) throws DataAccessException;
 

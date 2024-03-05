@@ -3,6 +3,7 @@ package dataAccessTests;
 import model.AuthData;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import dataAccess.*;
 import server.Server;
@@ -12,13 +13,12 @@ import static org.junit.jupiter.api.Assertions.*;
 class MySQLAuthDAOTest {
     static Server server;
 
-//    @BeforeAll
-//    static void startServer() {
-//        server = new Server(new MemoryGameDAO(), new MySQLAuthDAO(), new MySQLUserDAO());
-//        server.run(0);
-//        var url = "http://localhost:" + petServer.port();
-//        server = new ServerFacade(url);
-//    }
+    @BeforeEach
+    void init() {
+        var test = assertDoesNotThrow(() ->new MySQLAuthDAO());
+        assertDoesNotThrow(() ->test.clear());
+
+    }
 
     @Test
     void clear() {
@@ -37,20 +37,44 @@ class MySQLAuthDAOTest {
     void insertAuthTestPositive() {
         var test = assertDoesNotThrow(() ->new MySQLAuthDAO());
         assertDoesNotThrow(() -> test.insertAuth("micah"));
+        var result = assertDoesNotThrow(()-> test.getAuthMap());
+
+        Assertions.assertEquals(1, result.size());
 
     }
 
     @Test
     void insertAuthTestNegative() {
         var test = assertDoesNotThrow(() ->new MySQLAuthDAO());
-        assertDoesNotThrow(() -> test.insertAuth("micah"));
-        var ex = Assertions.assertThrows(DataAccessException.class, ()->test.insertAuth("micah")) ;
-        Assertions.assertEquals(ex.getMessage(), "unable to update database: %s, %s");
+        var testToken = assertDoesNotThrow(() -> test.insertAuth(""));
+        var resultAuthData = assertDoesNotThrow(() -> test.getAuthData(testToken));
+        var result = assertDoesNotThrow(()-> test.getAuthMap());
+
+        Assertions.assertEquals("", resultAuthData.getUsername());
+        Assertions.assertEquals(1, result.size());
 
     }
 
     @Test
-    void getAuthMap() {
+    void getAuthMapPositive() {
+        var test = assertDoesNotThrow(() ->new MySQLAuthDAO());
+
+        assertDoesNotThrow(() -> test.insertAuth("micah"));
+        assertDoesNotThrow(() -> test.insertAuth("sadie"));
+        assertDoesNotThrow(() -> test.insertAuth("taylor"));
+        var result = assertDoesNotThrow(()-> test.getAuthMap());
+
+        Assertions.assertEquals(3, result.size());
+
+    }
+
+    @Test
+    void getAuthMapNegative() {
+        var test = assertDoesNotThrow(() ->new MySQLAuthDAO());
+        var result = assertDoesNotThrow(()-> test.getAuthMap());
+
+        Assertions.assertEquals(0, result.size());
+
     }
 
     @Test
@@ -74,7 +98,21 @@ class MySQLAuthDAOTest {
     }
 
     @Test
-    void deleteAuth() {
+    void deleteAuthPositive() {
+        var test = assertDoesNotThrow(() ->new MySQLAuthDAO());
+        String testToken = assertDoesNotThrow(() -> test.insertAuth("micah"));
+        assertDoesNotThrow(() ->test.deleteAuth(testToken));
+        var result = assertDoesNotThrow(() ->test.checkAuthToken(testToken));
+        Assertions.assertEquals(false, result);
+    }
+
+    @Test
+    void deleteAuthNegative() {
+        var test = assertDoesNotThrow(() ->new MySQLAuthDAO());
+        assertDoesNotThrow(() ->test.deleteAuth("testToken"));
+        var result = assertDoesNotThrow(()-> test.getAuthMap());
+
+        Assertions.assertEquals(0, result.size());
     }
 
     @Test
@@ -84,6 +122,8 @@ class MySQLAuthDAOTest {
         boolean testCheck = assertDoesNotThrow(() -> test.checkAuthToken(testToken));
         Assertions.assertEquals(true, testCheck);
     }
+
+
 
     @Test
     void checkAuthTokenNegative() {
