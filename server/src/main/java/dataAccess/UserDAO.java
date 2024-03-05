@@ -8,15 +8,15 @@ import java.util.HashSet;
 
 public interface UserDAO {
 
-    UserData getUser(String username);
+    UserData getUser(String username) throws DataAccessException;
 
     void insertUser(UserData userData) throws DataAccessException;
 
-    HashMap getUserMap();
+    HashMap getUserMap() throws DataAccessException;
 
     void clear() throws DataAccessException;
 
-    void deleteUser(String username);
+    void deleteUser(String username) throws DataAccessException;
 
 
 }

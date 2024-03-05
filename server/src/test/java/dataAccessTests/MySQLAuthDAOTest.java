@@ -29,6 +29,9 @@ class MySQLAuthDAOTest {
        assertDoesNotThrow(() -> test.insertAuth("sadie"));
        assertDoesNotThrow(() -> test.insertAuth("taylor"));
        assertDoesNotThrow(()->test.clear());
+        var result = assertDoesNotThrow(()-> test.getAuthMap());
+
+        Assertions.assertEquals(0, result.size());
 
 
     }
