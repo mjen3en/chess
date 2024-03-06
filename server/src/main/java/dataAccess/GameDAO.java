@@ -13,11 +13,11 @@ public interface GameDAO {
 
     void clear() throws DataAccessException;
 
-    HashMap getGameMap();
+    HashMap getGameMap() throws DataAccessException;
 
     List getGameList();
 
     void updateGame(GameData gameData);
 
-    boolean checkIfGameExists(int gameID);
+    boolean checkIfGameExists(int gameID) throws DataAccessException;
 }

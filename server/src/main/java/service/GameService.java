@@ -96,7 +96,7 @@ public class GameService {
         return gameDAO.insertGame(game);
     }
 
-    public int getMapSize(){
+    public int getMapSize() throws DataAccessException {
         return gameDAO.getGameMap().size();
     }
 
