@@ -8,10 +8,10 @@ import java.util.List;
 public interface GameDAO {
 
 
-    GameData getGame(int gameID);
-    Integer insertGame(GameData gameData);
+    GameData getGame(int gameID) throws DataAccessException;
+    Integer insertGame(GameData gameData) throws DataAccessException;
 
-    void clear();
+    void clear() throws DataAccessException;
 
     HashMap getGameMap();
 

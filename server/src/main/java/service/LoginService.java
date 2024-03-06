@@ -5,6 +5,7 @@ import dataAccess.DataAccessException;
 import dataAccess.UserDAO;
 import model.AuthData;
 import model.UserData;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import request.LoginRequest;
 import request.LogoutRequest;
 import result.LoginResult;
@@ -53,6 +54,12 @@ public class LoginService {
     }
 
     private boolean checkPassword(LoginRequest request, UserData userData){
-        return request.password().equals(userData.getPassword());
+        String encryptedPassword = encodePassword(request.password());
+        return encryptedPassword.equals(userData.getPassword());
+    }
+
+    private String encodePassword(String password){
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+        return encoder.encode(password);
     }
 }

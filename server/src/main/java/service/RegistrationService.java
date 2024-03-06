@@ -7,6 +7,7 @@ import model.AuthData;
 import model.UserData;
 import request.RegisterRequest;
 import result.RegisterResult;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.HashSet;
 import java.util.UUID;
@@ -26,7 +27,10 @@ public class RegistrationService {
             throw new DataAccessException("Error: bad request");
         }
 
-        UserData userData = new UserData(request.username(), request.password(), request.email());
+        //encrypt password
+        String encryptedPassword = encodePassword(request.password());
+
+        UserData userData = new UserData(request.username(), encryptedPassword, request.email());
         //get user
         if (userDAO.getUser(userData.username) != null){
             throw new DataAccessException("Error: already taken");
@@ -36,6 +40,11 @@ public class RegistrationService {
 
         //create auth
         return new RegisterResult(request.username(), authDao.insertAuth(request.username()));
+    }
+
+    private String encodePassword(String password){
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+        return encoder.encode(password);
     }
 
 

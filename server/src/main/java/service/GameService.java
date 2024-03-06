@@ -92,7 +92,7 @@ public class GameService {
 
     }
 
-    public int insertGame(GameData game){
+    public int insertGame(GameData game) throws DataAccessException {
         return gameDAO.insertGame(game);
     }
 
