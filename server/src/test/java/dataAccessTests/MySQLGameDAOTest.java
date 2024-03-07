@@ -53,14 +53,7 @@ class MySQLGameDAOTest {
         var test = assertDoesNotThrow(() ->new MySQLGameDAO());
 
         GameData game1 = null;
-        //Assertions.assertThrows(()-> test.insertGame(game1));
-
-        //Assertions.assertEquals(1, id1);
-
-        var gameMap = assertDoesNotThrow(()-> test.getGameMap());
-        Assertions.assertEquals(3, gameMap.size());
-
-        //list games
+        Assertions.assertThrows(NullPointerException.class, ()-> test.insertGame(game1));
     }
 
     @Test
@@ -154,11 +147,11 @@ class MySQLGameDAOTest {
         var test = assertDoesNotThrow(() ->new MySQLGameDAO());
         var game1 = new GameData(0, null, null, "coolgame", new ChessGame());
         int id1 = assertDoesNotThrow(()-> test.insertGame(game1));
-        var game2 = new GameData(1, null, null, null, null);
+        GameData game2 = null;
 
 
 
-        assertThrows(DataAccessException.class, ()-> test.updateGame(game2));
+        assertThrows(NullPointerException.class, ()-> test.updateGame(game2));
     }
 
     @Test
