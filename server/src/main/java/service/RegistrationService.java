@@ -42,7 +42,7 @@ public class RegistrationService {
         return new RegisterResult(request.username(), authDao.insertAuth(request.username()));
     }
 
-    private String encodePassword(String password){
+    static String encodePassword(String password){
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
         return encoder.encode(password);
     }

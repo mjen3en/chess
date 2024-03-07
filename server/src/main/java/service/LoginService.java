@@ -56,8 +56,8 @@ public class LoginService {
     }
 
     private boolean checkPassword(LoginRequest request, UserData userData){
-        String encryptedPassword = encodePassword(request.password());
-        return encryptedPassword.equals(userData.getPassword());
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+        return encoder.matches(request.password(), userData.password);
     }
 
     private String encodePassword(String password){
