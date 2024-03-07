@@ -110,11 +110,55 @@ class MySQLGameDAOTest {
     }
 
     @Test
-    void getGameList() {
+    void getGameListPositive() {
+        var test = assertDoesNotThrow(() ->new MySQLGameDAO());
+
+        var game1 = new GameData(0, "micah", "tay", "coolgame", new ChessGame());
+        var game2 = new GameData(0, "kaden", "eli", "coolergame", new ChessGame());
+        var game3 = new GameData(0, "kevin", "koby", "coolestgame", new ChessGame());
+        int id1 = assertDoesNotThrow(()-> test.insertGame(game1));
+        int id2 = assertDoesNotThrow(()-> test.insertGame(game2));
+        int id3 =  assertDoesNotThrow(()-> test.insertGame(game3));
+
+        var list = assertDoesNotThrow(()->test.getGameList());
+        Assertions.assertEquals(3, list.size());
+
     }
 
     @Test
-    void updateGame() {
+    void getGameListNegative() {
+        var test = assertDoesNotThrow(() ->new MySQLGameDAO());
+        var list = assertDoesNotThrow(()->test.getGameList());
+        Assertions.assertEquals(0, list.size());
+
+    }
+
+    @Test
+    void updateGamePositive() {
+        var test = assertDoesNotThrow(() ->new MySQLGameDAO());
+        var game1 = new GameData(0, null, null, "coolgame", new ChessGame());
+        int id1 = assertDoesNotThrow(()-> test.insertGame(game1));
+        var game2 = new GameData(1, "Micah", "Taylor", "coolgame", new ChessGame());
+
+
+
+        assertDoesNotThrow(()-> test.updateGame(game2));
+        HashMap<Integer, GameData> gameMap = assertDoesNotThrow(()-> test.getGameMap());
+        var result = assertDoesNotThrow(() ->test.getGame(id1));
+        Assertions.assertEquals("Micah", result.getWhiteUsername());
+        Assertions.assertEquals("Taylor", result.getBlackUsername());
+    }
+
+    @Test
+    void updateGameNegative() {
+        var test = assertDoesNotThrow(() ->new MySQLGameDAO());
+        var game1 = new GameData(0, null, null, "coolgame", new ChessGame());
+        int id1 = assertDoesNotThrow(()-> test.insertGame(game1));
+        var game2 = new GameData(1, null, null, null, null);
+
+
+
+        assertThrows(DataAccessException.class, ()-> test.updateGame(game2));
     }
 
     @Test

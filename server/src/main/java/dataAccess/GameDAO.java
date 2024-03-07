@@ -15,9 +15,9 @@ public interface GameDAO {
 
     HashMap getGameMap() throws DataAccessException;
 
-    List getGameList();
+    List getGameList() throws DataAccessException;
 
-    void updateGame(GameData gameData);
+    void updateGame(GameData gameData) throws DataAccessException;
 
     boolean checkIfGameExists(int gameID) throws DataAccessException;
 }

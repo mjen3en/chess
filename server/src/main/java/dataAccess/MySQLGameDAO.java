@@ -8,6 +8,7 @@ import model.UserData;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -67,9 +68,16 @@ public class MySQLGameDAO implements GameDAO{
         return map;
     }
 
-    public List getGameList(){return null;}
+    public List getGameList() throws DataAccessException {
+        return new ArrayList<GameData>(getGameMap().values());
+    }
 
-    public void updateGame(GameData gameData){}
+    public void updateGame(GameData gameData) throws DataAccessException {
+        var gson = new Gson();
+        var game = gson.toJson(gameData.getGame());
+        var statement = "UPDATE games SET whiteusername =?, blackusername = ?, game =? WHERE id =?";
+        executeUpdate(statement, gameData.getWhiteUsername(), gameData.getBlackUsername(), game, gameData.getGameID());
+    }
 
     public boolean checkIfGameExists(int gameID) throws DataAccessException {
         HashMap<Integer, GameData> gameMap = getGameMap();

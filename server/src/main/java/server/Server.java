@@ -17,16 +17,23 @@ public class Server {
     AuthDAO aDao;
     UserDAO uDao;
 
-    GameService gameService = new GameService(gDao, uDao, aDao);
-    RegistrationService registrationService = new RegistrationService(aDao, uDao);
-    LoginService loginService = new LoginService(aDao, uDao);
+    GameService gameService;
+    RegistrationService registrationService;
+    LoginService loginService;
+
+
+
 
 
     public Server() {
         try {
-            this.gDao = new MemoryGameDAO();
+            this.gDao = new MySQLGameDAO();
             this.aDao = new MySQLAuthDAO();
             this.uDao = new MySQLUserDAO();
+
+            gameService = new GameService(gDao, uDao, aDao);
+            registrationService = new RegistrationService(aDao, uDao);
+            loginService = new LoginService(aDao, uDao);
         } catch (Exception ex){
             System.out.printf("Unable to start server: %s%n", ex.getMessage());
         }

@@ -25,6 +25,8 @@ public class LoginService {
         // get user from DAO
         UserData userData = userDAO.getUser(request.username());
 
+        String encodedPassword = encodePassword(request.password());
+
         //check password
         if (userData == null) {
             throw new DataAccessException("Error: unauthorized");
