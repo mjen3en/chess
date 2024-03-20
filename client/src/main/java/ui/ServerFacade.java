@@ -1,9 +1,12 @@
+package ui;
+
 import com.google.gson.Gson;
 import com.sun.net.httpserver.Request;
 
 import java.io.*;
 import java.net.*;
 import request.*;
+import result.ClearResult;
 import result.LoginResult;
 import result.RegisterResult;
 
@@ -24,6 +27,11 @@ public class ServerFacade {
             return response.authToken();
 
 
+    }
+
+    public void clear() throws ResponseException{
+        var path = "/db";
+        makeRequest("DELETE", path, "", ClearResult.class);
     }
 
     public String register(String username, String password, String email) throws ResponseException {
@@ -84,6 +92,6 @@ public class ServerFacade {
 
 
     private boolean isSuccessful(int status) {
-        return status / 100 == 2;
+        return status == 200;
     }
 }

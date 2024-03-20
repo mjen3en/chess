@@ -1,9 +1,13 @@
+package ui;
+
 import com.sun.nio.sctp.NotificationHandler;
 import java.util.Arrays;
 
 
 public class PreLoginClient implements Client{
     private String visitorName = null;
+
+    public String authToken;
     private ServerFacade sf;
 
     private String serverUrl;
@@ -11,7 +15,7 @@ public class PreLoginClient implements Client{
 
 
 
-    public PreLoginClient(String url, NotificationHandler notificationHandler){
+    public PreLoginClient(String url){
           this.serverUrl = url;
 //        this.notificationHandler = notificationHandler;
     }
@@ -25,15 +29,17 @@ public class PreLoginClient implements Client{
                   case "login" -> login(params);
                   case "register" -> register(params);
                   case "quit" -> "quit";
+                  case "clear" -> clear();
                   default -> help();
             };
         } catch (ResponseException ex) {
+            Repl.state = State.SIGNEDOUT;
             return ex.getMessage();
         }
     }
 
     public String help(){
-        return """
+        return EscapeSequences.SET_TEXT_COLOR_WHITE + """
                 register <USERNAME> <PASSWORD> <EMAIL> - to create an account
                 login <USERNAME> <PASSWORD> - to play chess
                 quit - stop playing chess
@@ -43,30 +49,41 @@ public class PreLoginClient implements Client{
 
 
     private String login(String ... params) throws ResponseException {
-        if (params.length >= 3){
-            Repl.state = State.SIGNEDIN;
-            String username = params[1];
-            String password = params[2];
+        if (params.length >= 2){
+            String username = params[0];
+            String password = params[1];
             sf = new ServerFacade(serverUrl);
-            String authToken = sf.login(username, password);
-            System.out.println(authToken);
+            authToken = sf.login(username, password);
+            Repl.state = State.SIGNEDIN;
+        } else {
+            throw new ResponseException(400, "need <USERNAME> <PASSWORD> <EMAIL>");
         }
-        return "";
+        return "Login Successful";
     }
 
 
 
     private String register(String ... params) throws ResponseException {
-        if (params.length >= 4){
+        if (params.length >= 3){
             Repl.state = State.SIGNEDIN;
-            String username = params[1];
-            String password = params[2];
-            String email = params[3];
+            String username = params[0];
+            String password = params[1];
+            String email = params[2];
             sf = new ServerFacade(serverUrl);
-            String authToken = sf.register(username, password, email);
-            System.out.println(authToken);
+            authToken = sf.register(username, password, email);
+            Repl.state = State.SIGNEDIN;
+        } else {
+            throw new ResponseException(400, "need <USERNAME> <PASSWORD> <EMAIL>");
         }
-        return "";
+        return "Registration Successful";
+    }
+
+    private String clear() throws ResponseException{
+        sf = new ServerFacade(serverUrl);
+        sf.clear();
+
+        return "Clear Successful (you sly dawg)";
+
     }
 
 
