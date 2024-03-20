@@ -3,14 +3,10 @@ package service;
 import dataAccess.AuthDAO;
 import dataAccess.DataAccessException;
 import dataAccess.UserDAO;
-import model.AuthData;
 import model.UserData;
 import request.RegisterRequest;
 import result.RegisterResult;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-
-import java.util.HashSet;
-import java.util.UUID;
 
 public class RegistrationService {
 

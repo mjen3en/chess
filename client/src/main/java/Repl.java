@@ -12,7 +12,7 @@ public class Repl {
 
     public static State state = State.SIGNEDOUT;
     private PreLoginClient preClient;
-    private PostLoginClient postClient;
+    //private PostLoginClient postClient;
 
     public Repl(String serverURL) {
         preClient = new PreLoginClient("string", new NotificationHandler() {
@@ -24,16 +24,15 @@ public class Repl {
     }
 
     public void run() {
-        System.out.println("\uD83D\uDC36 Welcome to the pet store. Sign in to start.");
+        System.out.println("\uD83D\uDC36 Welcome to chess. Register to start");
         System.out.print(preClient.help());
 
-        Scanner scanner = new Scanner(System.in);
         var result = "";
 
         while (!result.equals("quit")) {
             switch (state) {
                 case SIGNEDOUT -> result = userInterface(preClient);
-                case SIGNEDIN -> result = userInterface(postClient);
+                //case SIGNEDIN -> result = userInterface(postClient);
                 // switch to game play UI
             }
         }
@@ -43,9 +42,9 @@ public class Repl {
 
 
 
-    private void printPrompt() {
-        System.out.print("\n" + RESET + ">>> " + GREEN);
-    }
+//    private void printPrompt() {
+//        System.out.print("\n"  +  RESET + ">>> " + GREEN);
+//    }
 
     //turn while loop into function Pre Login U1
     // make UI function generic and pass in client as argument?
@@ -54,7 +53,7 @@ public class Repl {
         Scanner scanner = new Scanner(System.in);
         var result = "";
         while (!result.equals("quit")) {
-            printPrompt();
+            //printPrompt();
             String line = scanner.nextLine();
 
             try {

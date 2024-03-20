@@ -1,13 +1,18 @@
 import com.sun.nio.sctp.NotificationHandler;
+import java.util.Arrays;
 
 
 public class PreLoginClient implements Client{
+    private String visitorName = null;
+    private ServerFacade sf;
+
+    private String serverUrl;
 
 
 
-    public PreLoginClient(String serverURL, NotificationHandler notificationHandler){
-//        server = new ServerFacade(serverUrl);
-//        this.serverUrl = serverUrl;
+
+    public PreLoginClient(String url, NotificationHandler notificationHandler){
+          this.serverUrl = url;
 //        this.notificationHandler = notificationHandler;
     }
 
@@ -18,11 +23,9 @@ public class PreLoginClient implements Client{
             var params = Arrays.copyOfRange(tokens, 1, tokens.length);
             return switch (cmd) {
                   case "login" -> login(params);
-                  case "help" -> help(params);
                   case "register" -> register(params);
                   case "quit" -> "quit";
-
-                default -> help();
+                  default -> help();
             };
         } catch (ResponseException ex) {
             return ex.getMessage();
@@ -39,18 +42,30 @@ public class PreLoginClient implements Client{
     }
 
 
-    private String login(String ... params){
+    private String login(String ... params) throws ResponseException {
         if (params.length >= 3){
-            //state = State.SIGNEDIN;
-
-            //websocket stuff and crap
+            Repl.state = State.SIGNEDIN;
+            String username = params[1];
+            String password = params[2];
+            sf = new ServerFacade(serverUrl);
+            String authToken = sf.login(username, password);
+            System.out.println(authToken);
         }
         return "";
     }
 
 
 
-    private String register(){
+    private String register(String ... params) throws ResponseException {
+        if (params.length >= 4){
+            Repl.state = State.SIGNEDIN;
+            String username = params[1];
+            String password = params[2];
+            String email = params[3];
+            sf = new ServerFacade(serverUrl);
+            String authToken = sf.register(username, password, email);
+            System.out.println(authToken);
+        }
         return "";
     }
 
