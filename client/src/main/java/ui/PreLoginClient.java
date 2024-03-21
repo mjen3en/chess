@@ -28,7 +28,7 @@ public class PreLoginClient implements Client{
             return switch (cmd) {
                   case "login" -> login(params);
                   case "register" -> register(params);
-                  case "quit" -> "quit";
+                  case "quit" -> "Be seeing you";
                   case "clear" -> clear();
                   default -> help();
             };
@@ -45,6 +45,11 @@ public class PreLoginClient implements Client{
                 quit - stop playing chess
                 help - show possible commands
                 """;
+    }
+
+    @Override
+    public String getAuth(){
+        return authToken;
     }
 
 

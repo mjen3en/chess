@@ -4,21 +4,59 @@ import java.util.Arrays;
 
 public class PostLoginClient implements Client{
 
-    PostLoginClient(String serverURL){}
+    private ServerFacade sf;
+
+    private String serverUrl;
+
+    public String authToken;
+
+    PostLoginClient(String serverURL, String authToken){
+        this.serverUrl = serverURL;
+        this.authToken = authToken;
+    }
 
     @Override
     public String eval(String input) {
-//        try {
+        try {
             var tokens = input.toLowerCase().split(" ");
             var cmd = (tokens.length > 0) ? tokens[0] : "help";
             var params = Arrays.copyOfRange(tokens, 1, tokens.length);
             return switch (cmd) {
+                case "logout" -> logout(authToken);
+                case "creategame" -> createGame();
+                case "listgames" -> listGames();
+                case "joingame" -> joinGame();
+                case "observe" -> joinObserve();
                 default -> help();
             };
-//        } catch (ResponseException ex) {
-//            return ex.getMessage();
-//        }
+        } catch (ResponseException ex) {
+            return ex.getMessage();
+        }
     }
+
+    private String joinObserve() {
+        return "";
+    }
+
+    private String joinGame() {
+        return "";
+    }
+
+    private String listGames() {
+        return "";
+    }
+
+    private String createGame() {
+        return "";
+    }
+
+    private String logout(String authToken) throws ResponseException {
+        sf = new ServerFacade(serverUrl);
+        sf.logout(authToken);
+        Repl.state = State.SIGNEDOUT;
+        return "Logout Successful";
+    }
+
     @Override
     public String help() {
         return """
@@ -28,5 +66,10 @@ public class PostLoginClient implements Client{
                 joingame <GAMEID> - join a game currently on the server
                 observe <GAMEID> - watch a game on the server
                 """;
+    }
+
+    @Override
+    public String getAuth() {
+        return authToken;
     }
 }

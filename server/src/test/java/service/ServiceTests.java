@@ -105,7 +105,7 @@ class ServiceTests {
         RegistrationService test = new RegistrationService(authDAO, userDAO);
         LoginService test1 = new LoginService(authDAO, userDAO);
         var authToken = test.register(new RegisterRequest("micah", "jensen", "website@gmail.com"));
-        test1.logout(new LogoutRequest(authToken.authToken()), authToken.authToken());
+        test1.logout(new LogoutRequest(authToken.authToken()));
         Assertions.assertEquals(0, authDAO.getAuthMap().size());
         Assertions.assertEquals(0, userDAO.getUserMap().size());
     }
@@ -118,7 +118,7 @@ class ServiceTests {
         RegistrationService test = new RegistrationService(authDAO, userDAO);
         LoginService test1 = new LoginService(authDAO, userDAO);
         var authToken = test.register(new RegisterRequest("micah", "jensen", "website@gmail.com"));
-        Exception exp = Assertions.assertThrows(DataAccessException.class, () -> test1.logout(new LogoutRequest(""), ""));
+        Exception exp = Assertions.assertThrows(DataAccessException.class, () -> test1.logout(new LogoutRequest("")));
         Assertions.assertEquals("Error: unauthorized", exp.getMessage());
 
     }

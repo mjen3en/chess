@@ -8,6 +8,7 @@ import java.net.*;
 import request.*;
 import result.ClearResult;
 import result.LoginResult;
+import result.LogoutResult;
 import result.RegisterResult;
 
 
@@ -19,14 +20,18 @@ public class ServerFacade {
         serverUrl = url;
     }
 
+    public void logout(String authToken) throws ResponseException {
+        var path = "/session";
+        var request = new LogoutRequest(authToken);
+        var response = this.makeRequest("DELETE", path, request, LogoutResult.class);
+    }
+
 
     public String login(String username, String password) throws ResponseException {
         var path = "/session";
         var request = new LoginRequest(username, password);
-            var response = this.makeRequest("POST", path, request,  LoginResult.class);
-            return response.authToken();
-
-
+        var response = this.makeRequest("POST", path, request,  LoginResult.class);
+        return response.authToken();
     }
 
     public void clear() throws ResponseException{

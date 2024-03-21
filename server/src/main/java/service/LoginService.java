@@ -25,8 +25,6 @@ public class LoginService {
         // get user from DAO
         UserData userData = userDAO.getUser(request.username());
 
-        String encodedPassword = encodePassword(request.password());
-
         //check password
         if (userData == null) {
             throw new DataAccessException("Error: unauthorized");
@@ -38,9 +36,10 @@ public class LoginService {
         return new LoginResult(request.username(), authDao.insertAuth(request.username()));
     }
 
-    public LogoutResult logout(LogoutRequest request, String authToken) throws DataAccessException{
+    public LogoutResult logout(LogoutRequest request) throws DataAccessException{
+        String authToken = request.authToken();
         //gets username from authMap
-        AuthData authData = authDao.getAuthData(authToken);
+        AuthData authData = authDao.getAuthData(request.authToken());
 
         if (authData == null){
             throw new DataAccessException("Error: unauthorized");
@@ -50,7 +49,7 @@ public class LoginService {
         authDao.deleteAuth(authToken);
 
         //removes username and Authdata from userMap
-        userDAO.deleteUser(authData.getUsername());
+        //userDAO.deleteUser(authData.getUsername());
 
         return new LogoutResult("{}");
     }
@@ -60,8 +59,8 @@ public class LoginService {
         return encoder.matches(request.password(), userData.password);
     }
 
-    private String encodePassword(String password){
-        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-        return encoder.encode(password);
-    }
+//    private String encodePassword(String password){
+//        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+//        return encoder.encode(password);
+//    }
 }

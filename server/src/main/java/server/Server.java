@@ -106,7 +106,7 @@ public class Server {
         LogoutRequest req = (LogoutRequest) gson.fromJson(request.body(), LogoutRequest.class);
         String authToken = request.headers("authorization");
         try {
-            LogoutResult result = loginService.logout(req, authToken);
+            LogoutResult result = loginService.logout(req);
             response.status(200);
             return gson.toJson(result);
         } catch (DataAccessException ex){

@@ -14,11 +14,15 @@ public class Repl {
 
     public static State state = State.SIGNEDOUT;
     private PreLoginClient preClient;
-    private PostLoginClient postClient;
+    public PostLoginClient postClient;
+
+    String authToken;
+
+    String serverURL;
 
     public Repl(String serverURL) {
         preClient = new PreLoginClient(serverURL);
-        postClient = new PostLoginClient(serverURL);
+        this.serverURL = serverURL;
 
 
     }
@@ -30,11 +34,14 @@ public class Repl {
 
         var result = "";
 
-        while (!result.equals("quit")) {
+        while (!result.equals("Be seeing you")) {
             switch (state) {
                 case SIGNEDOUT -> result = userInterface(preClient);
                 case SIGNEDIN -> result = userInterface(postClient);
                 // switch to game play UI
+            }
+            if (state == State.SIGNEDIN){
+                postClient = new PostLoginClient(serverURL, preClient.getAuth());
             }
         }
 
@@ -73,5 +80,12 @@ public class Repl {
         out.println(EscapeSequences.SET_BG_COLOR_BLACK);
         out.println(EscapeSequences.SET_TEXT_COLOR_WHITE);
     }
+
+
+//    private void updateAuthtoken(){
+//        if (authtoken != ""){
+//            postClient = new PostLoginClient(serverURL)
+//        }
+//    }
 
 }
