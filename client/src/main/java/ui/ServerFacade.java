@@ -6,10 +6,7 @@ import com.sun.net.httpserver.Request;
 import java.io.*;
 import java.net.*;
 import request.*;
-import result.ClearResult;
-import result.LoginResult;
-import result.LogoutResult;
-import result.RegisterResult;
+import result.*;
 
 
 public class ServerFacade {
@@ -18,6 +15,12 @@ public class ServerFacade {
 
     public ServerFacade(String url) {
         serverUrl = url;
+    }
+
+    public void createGame(String gameName, String authToken) throws ResponseException{
+        var path = "/game";
+        var request = new CreateGameRequest(gameName, authToken);
+        var response = this.makeRequest("POST", path, request, CreateGameResult.class);
     }
 
     public void logout(String authToken) throws ResponseException {

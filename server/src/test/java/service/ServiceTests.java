@@ -20,9 +20,9 @@ class ServiceTests {
         GameService test =  new GameService(new MemoryGameDAO(), new MemoryUserDAO(), new MemoryAuthDAO());
         RegistrationService test1 = new RegistrationService(authDAO, userDAO);
         var register = test1.register(new RegisterRequest("micah", "jensen", "website@gmail.com"));
-        test.createGame(new CreateGameRequest("gameName"), register.authToken());
-        test.createGame(new CreateGameRequest("gameName2"), register.authToken());
-        test.createGame(new CreateGameRequest("gameName3"), register.authToken());
+        test.createGame(new CreateGameRequest("gameName", register.authToken()));
+        test.createGame(new CreateGameRequest("gameName2", register.authToken()));
+        test.createGame(new CreateGameRequest("gameName3", register.authToken()));
 
         Assertions.assertEquals(3, test.getMapSize());
 
@@ -134,11 +134,11 @@ class ServiceTests {
         GameService test3 = new GameService(gameDAO, userDAO, authDAO);
 
         var registration = test.register(new RegisterRequest("micah", "jensen", "website@gmail.com"));
-        test3.createGame(new CreateGameRequest("gameName"), registration.authToken());
+        test3.createGame(new CreateGameRequest("gameName", registration.authToken()));
         var expectedGamesList = new HashMap<>();
         expectedGamesList.put(0, new GameData(1,null, null, "gameName", new ChessGame()));
 
-        Assertions.assertEquals(expectedGamesList.values().size(), test3.listGames(new ListGamesRequest(), registration.authToken()).games().size());
+        Assertions.assertEquals(expectedGamesList.values().size(), test3.listGames(new ListGamesRequest(registration.authToken())).games().size());
     }
 
     @Test
@@ -153,7 +153,7 @@ class ServiceTests {
         GameService test3 = new GameService(gameDAO, userDAO, authDAO);
 
         var registration = test.register(new RegisterRequest("micah", "jensen", "website@gmail.com"));
-        Exception exp = Assertions.assertThrows(DataAccessException.class, () -> test3.createGame(new CreateGameRequest("gameName"), ""));
+        Exception exp = Assertions.assertThrows(DataAccessException.class, () -> test3.createGame(new CreateGameRequest("gameName", "")));
         Assertions.assertEquals("Error: unauthorized", exp.getMessage());
     }
 
@@ -168,9 +168,9 @@ class ServiceTests {
         GameService test3 = new GameService(gameDAO, userDAO, authDAO);
 
         var registration = test.register(new RegisterRequest("micah", "jensen", "website@gmail.com"));
-        test3.createGame(new CreateGameRequest("gameName"), registration.authToken());
+        test3.createGame(new CreateGameRequest("gameName", registration.authToken()));
         test3.joinGame(new JoinGameRequest("WHITE", 1), registration.authToken() );
-        var gameUsername = test3.listGames(new ListGamesRequest(), registration.authToken()).games().get(0).getWhiteUsername();
+        var gameUsername = test3.listGames(new ListGamesRequest(registration.authToken())).games().get(0).getWhiteUsername();
         Assertions.assertEquals("micah", gameUsername);
 
     }
@@ -186,7 +186,7 @@ class ServiceTests {
         GameService test3 = new GameService(gameDAO, userDAO, authDAO);
 
         var registration = test.register(new RegisterRequest("micah", "jensen", "website@gmail.com"));
-        test3.createGame(new CreateGameRequest("gameName"), registration.authToken());
+        test3.createGame(new CreateGameRequest("gameName", registration.authToken()));
         Exception exp = Assertions.assertThrows(DataAccessException.class, () -> test3.joinGame(new JoinGameRequest("WHITE", 3), registration.authToken()));
         Assertions.assertEquals("Error: bad request", exp.getMessage());
 
@@ -203,7 +203,7 @@ class ServiceTests {
         GameService test3 = new GameService(gameDAO, userDAO, authDAO);
 
         var registration = test.register(new RegisterRequest("micah", "jensen", "website@gmail.com"));
-        test3.createGame(new CreateGameRequest("gameName"), registration.authToken());
+        test3.createGame(new CreateGameRequest("gameName", registration.authToken()));
         Assertions.assertEquals(1, test3.getMapSize());
 
     }
@@ -219,7 +219,7 @@ class ServiceTests {
         GameService test3 = new GameService(gameDAO, userDAO, authDAO);
 
         var registration = test.register(new RegisterRequest("micah", "jensen", "website@gmail.com"));
-        Exception exp = Assertions.assertThrows(DataAccessException.class, ()->test3.createGame(new CreateGameRequest(null), registration.authToken()));
+        Exception exp = Assertions.assertThrows(DataAccessException.class, ()->test3.createGame(new CreateGameRequest(null, registration.authToken())));
         Assertions.assertEquals("Error: bad request", exp.getMessage());
 
     }

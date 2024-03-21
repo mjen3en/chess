@@ -48,9 +48,6 @@ public class LoginService {
         //removes auth from authMap
         authDao.deleteAuth(authToken);
 
-        //removes username and Authdata from userMap
-        //userDAO.deleteUser(authData.getUsername());
-
         return new LogoutResult("{}");
     }
 
@@ -59,8 +56,4 @@ public class LoginService {
         return encoder.matches(request.password(), userData.password);
     }
 
-//    private String encodePassword(String password){
-//        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-//        return encoder.encode(password);
-//    }
 }

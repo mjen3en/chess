@@ -23,7 +23,7 @@ public class PostLoginClient implements Client{
             var params = Arrays.copyOfRange(tokens, 1, tokens.length);
             return switch (cmd) {
                 case "logout" -> logout(authToken);
-                case "creategame" -> createGame();
+                case "creategame" -> createGame(params);
                 case "listgames" -> listGames();
                 case "joingame" -> joinGame();
                 case "observe" -> joinObserve();
@@ -46,8 +46,16 @@ public class PostLoginClient implements Client{
         return "";
     }
 
-    private String createGame() {
-        return "";
+    private String createGame(String ... params) throws ResponseException {
+        if (params.length >= 1){
+            String gameName = params[0];
+            sf = new ServerFacade(serverUrl);
+            sf.createGame(gameName, authToken);
+        } else {
+            throw new ResponseException(400, "needs Game Name");
+        }
+
+        return "Game Creation Successful";
     }
 
     private String logout(String authToken) throws ResponseException {

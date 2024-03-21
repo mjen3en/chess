@@ -78,7 +78,7 @@ public class PreLoginClient implements Client{
             authToken = sf.register(username, password, email);
             Repl.state = State.SIGNEDIN;
         } else {
-            throw new ResponseException(400, "need <USERNAME> <PASSWORD> <EMAIL>");
+            throw new ResponseException(400, "need <USERNAME> <PASSWORD>");
         }
         return "Registration Successful";
     }

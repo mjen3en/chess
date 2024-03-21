@@ -78,7 +78,7 @@ public class Server {
         ListGamesRequest req = (ListGamesRequest)gson.fromJson(request.body(), ListGamesRequest.class);
         String authToken = request.headers("authorization");
         try {
-            ListGamesResult result = gameService.listGames(req, authToken);
+            ListGamesResult result = gameService.listGames(req);
             response.status(200);
             return gson.toJson(result);
         } catch (DataAccessException ex){
@@ -92,7 +92,7 @@ public class Server {
         CreateGameRequest req = (CreateGameRequest)gson.fromJson(request.body(), CreateGameRequest.class);
         String authToken = request.headers("authorization");
         try {
-            CreateGameResult result = gameService.createGame(req, authToken);
+            CreateGameResult result = gameService.createGame(req);
             response.status(200);
             return gson.toJson(result);
         } catch (DataAccessException ex){
