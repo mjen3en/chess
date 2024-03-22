@@ -1,5 +1,6 @@
 package ui;
 
+import chess.ChessBoard;
 import com.sun.nio.sctp.NotificationHandler;
 import java.util.Arrays;
 
@@ -30,12 +31,20 @@ public class PreLoginClient implements Client{
                   case "register" -> register(params);
                   case "quit" -> "Be seeing you";
                   case "clear" -> clear();
+                  case "p" -> printTestBoard();
                   default -> help();
             };
         } catch (ResponseException ex) {
             Repl.state = State.SIGNEDOUT;
             return ex.getMessage();
         }
+    }
+
+    private String printTestBoard() {
+        var board = new PrintBoard(new ChessBoard(), "WHITE");
+        board.drawBoard();
+
+        return "";
     }
 
     public String help(){
