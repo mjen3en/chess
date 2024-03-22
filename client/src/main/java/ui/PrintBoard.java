@@ -1,6 +1,7 @@
 package ui;
 
 import chess.ChessBoard;
+import chess.ChessGame;
 import chess.ChessPiece;
 import chess.ChessPosition;
 
@@ -58,6 +59,18 @@ public class PrintBoard {
             out.println();
         }
 
+        if (visitorColor == "BLACK"){
+            for (int boardCol = 7; boardCol > -1; --boardCol) {
+                drawHeader(out, headers[boardCol]);
+
+                if (boardCol > 0) {
+                    out.print(EMPTY.repeat(LINE_WIDTH_IN_CHARS));
+                }
+            }
+
+            out.println();
+        }
+
 
 
     }
@@ -92,15 +105,29 @@ public class PrintBoard {
              i = -1;
         }
 
-        for (int boardRow = 1; boardRow <= BOARD_SIZE_IN_SQUARES; ++boardRow) {
-            setTextWhite(out);
-            drawRowOfSquares(out, boardRow, sideHead);
-            out.println();
-            sideHead = sideHead + i;
-
-            if (boardRow < BOARD_SIZE_IN_SQUARES - 1) {
+        if (visitorColor == "BLACK") {
+            for (int boardRow = 1; boardRow <= BOARD_SIZE_IN_SQUARES; ++boardRow) {
                 setTextWhite(out);
+                drawRowOfSquares(out, boardRow, sideHead);
+                out.println();
+                sideHead = sideHead + i;
+
+                if (boardRow < BOARD_SIZE_IN_SQUARES - 1) {
+                    setTextWhite(out);
+                }
             }
+        } else {
+            for (int boardRow = 8; boardRow > 0; --boardRow) {
+                setTextWhite(out);
+                drawRowOfSquares(out, boardRow, sideHead);
+                out.println();
+                sideHead = sideHead + i;
+
+                if (boardRow < BOARD_SIZE_IN_SQUARES - 1) {
+                    setTextWhite(out);
+                }
+            }
+
         }
     }
 
@@ -124,7 +151,13 @@ public class PrintBoard {
         if (currentPiece != null){
             //determine pieceType
             String p = determinePieceType(currentPiece);
-            out.print("|  " + p);
+            out.print("|  ");
+            switch (currentPiece.getTeamColor()){
+                case BLACK -> setTextRed(out);
+                case WHITE -> setTextBlue(out);
+            }
+            out.print(p);
+            setTextWhite(out);
         } else {
             out.print("|   ");
 
@@ -170,9 +203,17 @@ public class PrintBoard {
         out.print(SET_TEXT_COLOR_WHITE);
     }
 
-    private static void setRed(PrintStream out) {
-        out.print(SET_BG_COLOR_RED);
+    private static void setTextGreen(PrintStream out) {
+        //out.print(SET_BG_COLOR_WHITE);
+        out.print(SET_TEXT_COLOR_GREEN);
+    }
+
+    private static void setTextRed(PrintStream out) {
         out.print(SET_TEXT_COLOR_RED);
+    }
+
+    private static void setTextBlue(PrintStream out) {
+        out.print(SET_TEXT_COLOR_BLUE);
     }
 
     private static void setBlack(PrintStream out) {
