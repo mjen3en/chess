@@ -1,5 +1,6 @@
 package ui;
 
+import chess.ChessBoard;
 import com.google.gson.Gson;
 
 import java.io.*;
@@ -33,6 +34,10 @@ public class ServerFacade {
         int trueId = findTrueGameId(trueGameMap, gameName);
         var request = new JoinGameRequest(playerColor, trueId);
         var response = this.makeRequest("PUT", path, request, JoinGameResult.class, authToken);
+        var pbW = new PrintBoard(new ChessBoard(), "WHITE");
+        var pbB = new PrintBoard(new ChessBoard(), "BLACK");
+        pbW.drawBoard();
+        pbB.drawBoard();
     }
 
     public HashMap listGames(String authToken) throws ResponseException {
