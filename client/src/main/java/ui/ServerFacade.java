@@ -1,10 +1,14 @@
 package ui;
 
 import com.google.gson.Gson;
-import com.sun.net.httpserver.Request;
 
 import java.io.*;
 import java.net.*;
+import java.util.HashMap;
+import java.util.List;
+
+import com.sun.net.httpserver.Headers;
+import model.GameData;
 import request.*;
 import result.*;
 
@@ -17,45 +21,56 @@ public class ServerFacade {
         serverUrl = url;
     }
 
+    public HashMap listGames(String authToken) throws ResponseException {
+        var path = "/game";
+        var request = new ListGamesRequest(authToken);
+        var response = this.makeRequest("GET", path, request, ListGamesResult.class, authToken);
+        return populateGameMap(response.games());
+
+    }
+
     public void createGame(String gameName, String authToken) throws ResponseException{
         var path = "/game";
         var request = new CreateGameRequest(gameName, authToken);
-        var response = this.makeRequest("POST", path, request, CreateGameResult.class);
+        var response = this.makeRequest("POST", path, request, CreateGameResult.class, authToken);
     }
 
     public void logout(String authToken) throws ResponseException {
         var path = "/session";
         var request = new LogoutRequest(authToken);
-        var response = this.makeRequest("DELETE", path, request, LogoutResult.class);
+        var response = this.makeRequest("DELETE", path, request, LogoutResult.class, authToken);
     }
 
 
     public String login(String username, String password) throws ResponseException {
         var path = "/session";
         var request = new LoginRequest(username, password);
-        var response = this.makeRequest("POST", path, request,  LoginResult.class);
+        var response = this.makeRequest("POST", path, request,  LoginResult.class, "");
         return response.authToken();
     }
 
     public void clear() throws ResponseException{
         var path = "/db";
-        makeRequest("DELETE", path, "", ClearResult.class);
+        makeRequest("DELETE", path, "", ClearResult.class, "");
     }
 
     public String register(String username, String password, String email) throws ResponseException {
         var path = "/user";
         var request = new RegisterRequest(username, password, email);
-            var response = this.makeRequest("POST", path, request, RegisterResult.class);
+            var response = this.makeRequest("POST", path, request, RegisterResult.class, "");
             return response.authToken();
     }
-    private <T> T makeRequest(String method, String path, Object request, Class<T> responseClass) throws ResponseException {
+    private <T> T makeRequest(String method, String path, Object request, Class<T> responseClass, String authToken) throws ResponseException {
         try {
             URL url = (new URI(serverUrl + path)).toURL();
             HttpURLConnection http = (HttpURLConnection) url.openConnection();
             http.setRequestMethod(method);
             http.setDoOutput(true);
+            http.setRequestProperty("authorization", authToken);
 
-            writeBody(request, http);
+            if (method != "GET") {
+                writeBody(request, http);
+            }
 
             //sends to the server
             http.connect();
@@ -100,6 +115,21 @@ public class ServerFacade {
 
 
     private boolean isSuccessful(int status) {
-        return status == 200;
+        return status / 100 == 2;
+    }
+
+    private HashMap populateGameMap(List<GameData> games){
+        int gameNum = 1;
+        HashMap<Integer, GameInfo> gameMap = new HashMap<Integer, GameInfo>();
+        for (GameData i : games){
+            GameInfo game = new GameInfo(i.getGameName(), i.getWhiteUsername(), i.getBlackUsername());
+            gameMap.put(gameNum, game);
+            gameNum++;
+
+
+
+
+        }
+        return gameMap;
     }
 }

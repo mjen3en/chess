@@ -1,6 +1,8 @@
 package ui;
 
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 public class PostLoginClient implements Client{
 
@@ -9,6 +11,8 @@ public class PostLoginClient implements Client{
     private String serverUrl;
 
     public String authToken;
+
+    private HashMap gameMap;
 
     PostLoginClient(String serverURL, String authToken){
         this.serverUrl = serverURL;
@@ -42,8 +46,11 @@ public class PostLoginClient implements Client{
         return "";
     }
 
-    private String listGames() {
-        return "";
+    private String listGames() throws ResponseException {
+        sf = new ServerFacade(serverUrl);
+        gameMap = sf.listGames(authToken);
+
+        return printMap(gameMap);
     }
 
     private String createGame(String ... params) throws ResponseException {
@@ -79,5 +86,15 @@ public class PostLoginClient implements Client{
     @Override
     public String getAuth() {
         return authToken;
+    }
+
+    private String printMap(HashMap<Integer, GameInfo> gameMap){
+        String list = "";
+        for (Map.Entry<Integer, GameInfo> i : gameMap.entrySet()){
+            GameInfo info = i.getValue();
+            String addition = i.getKey().toString() + " " + info.gameName() + ": " + info.player1() + " vs " + info.player2() + " \n";
+            list = list + addition;
+        }
+        return list;
     }
 }

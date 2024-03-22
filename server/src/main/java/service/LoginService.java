@@ -36,10 +36,9 @@ public class LoginService {
         return new LoginResult(request.username(), authDao.insertAuth(request.username()));
     }
 
-    public LogoutResult logout(LogoutRequest request) throws DataAccessException{
-        String authToken = request.authToken();
+    public LogoutResult logout(LogoutRequest request, String authToken) throws DataAccessException{
         //gets username from authMap
-        AuthData authData = authDao.getAuthData(request.authToken());
+        AuthData authData = authDao.getAuthData(authToken);
 
         if (authData == null){
             throw new DataAccessException("Error: unauthorized");
