@@ -52,13 +52,15 @@ public class PreLoginClient implements Client{
         return authToken;
     }
 
+    public String getVisitorName(){return visitorName;}
+
 
     private String login(String ... params) throws ResponseException {
         if (params.length >= 2){
-            String username = params[0];
+            visitorName = params[0];
             String password = params[1];
             sf = new ServerFacade(serverUrl);
-            authToken = sf.login(username, password);
+            authToken = sf.login(visitorName, password);
             Repl.state = State.SIGNEDIN;
         } else {
             throw new ResponseException(400, "need <USERNAME> <PASSWORD> <EMAIL>");
@@ -71,11 +73,11 @@ public class PreLoginClient implements Client{
     private String register(String ... params) throws ResponseException {
         if (params.length >= 3){
             Repl.state = State.SIGNEDIN;
-            String username = params[0];
+            visitorName = params[0];
             String password = params[1];
             String email = params[2];
             sf = new ServerFacade(serverUrl);
-            authToken = sf.register(username, password, email);
+            authToken = sf.register(visitorName, password, email);
             Repl.state = State.SIGNEDIN;
         } else {
             throw new ResponseException(400, "need <USERNAME> <PASSWORD>");

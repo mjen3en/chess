@@ -61,7 +61,7 @@ public class GameService {
         }
 
         //get and return list of games
-        return new ListGamesResult(gameDAO.getGameList());
+        return new ListGamesResult(gameDAO.getGameMap());
 
     }
 
@@ -101,12 +101,12 @@ public class GameService {
     }
 
     private void setColor(JoinGameRequest request, GameData updatedGame, String username) throws DataAccessException{
-        if (Objects.equals(request.playerColor(), "WHITE")) {
+        if (Objects.equals(request.playerColor(), "white")) {
             if (!(Objects.equals(updatedGame.getWhiteUsername(),null))){
                 throw new DataAccessException("Error: already taken");
             }
             updatedGame.setWhiteUsername(username);
-        } else if (Objects.equals(request.playerColor(), "BLACK")){
+        } else if (Objects.equals(request.playerColor(), "black")){
             if (!(Objects.equals(updatedGame.getBlackUsername(),null))){
                 throw new DataAccessException("Error: already taken");
             }

@@ -14,9 +14,12 @@ public class PostLoginClient implements Client{
 
     private HashMap gameMap;
 
+    private String visitorName;
+
     PostLoginClient(String serverURL, String authToken){
         this.serverUrl = serverURL;
         this.authToken = authToken;
+        this.visitorName = visitorName;
     }
 
     @Override
@@ -29,7 +32,7 @@ public class PostLoginClient implements Client{
                 case "logout" -> logout(authToken);
                 case "creategame" -> createGame(params);
                 case "listgames" -> listGames();
-                case "joingame" -> joinGame();
+                case "joingame" -> joinGame(params);
                 case "observe" -> joinObserve();
                 default -> help();
             };
@@ -42,8 +45,23 @@ public class PostLoginClient implements Client{
         return "";
     }
 
-    private String joinGame() {
-        return "";
+    private String joinGame(String ... params) throws ResponseException {
+        sf = new ServerFacade(serverUrl);
+        //update gameMap
+        gameMap = sf.listGames(authToken);
+        if (params.length >= 2) {
+            int gameNum = Integer.valueOf(params[0]);
+            String color = params[1];
+            if (color.equals("BLACK") && color.equals("WHITE")) {
+                throw new ResponseException(400, "Please specify color BLACK or WHITE");
+            }
+
+            sf.joinGame(authToken, gameNum, color);
+        } else {
+            throw new ResponseException(400, "<GAMEID> <TEAMCOLOR>");
+        }
+
+        return "Join Game Successful";
     }
 
     private String listGames() throws ResponseException {
@@ -78,7 +96,7 @@ public class PostLoginClient implements Client{
                 logout - stop playing for now
                 creategame <GAMENAME> - make a new game
                 listgames - list all games on the server
-                joingame <GAMEID> - join a game currently on the server
+                joingame <GAMEID> <COLOR> - join a game currently on the server
                 observe <GAMEID> - watch a game on the server
                 """;
     }

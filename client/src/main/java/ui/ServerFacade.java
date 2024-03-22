@@ -4,8 +4,10 @@ import com.google.gson.Gson;
 
 import java.io.*;
 import java.net.*;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.sun.net.httpserver.Headers;
 import model.GameData;
@@ -17,16 +19,29 @@ public class ServerFacade {
 
     private final String serverUrl;
 
+    private HashMap<Integer, GameData> trueGameMap;
+
+    private HashMap<Integer, GameInfo> clientGameMap;
+
     public ServerFacade(String url) {
         serverUrl = url;
+    }
+
+    public void joinGame(String authToken, int gameId, String playerColor) throws ResponseException {
+        var path = "/game";
+        String gameName = clientGameMap.get(gameId).gameName();
+        int trueId = findTrueGameId(trueGameMap, gameName);
+        var request = new JoinGameRequest(playerColor, trueId);
+        var response = this.makeRequest("PUT", path, request, JoinGameResult.class, authToken);
     }
 
     public HashMap listGames(String authToken) throws ResponseException {
         var path = "/game";
         var request = new ListGamesRequest(authToken);
         var response = this.makeRequest("GET", path, request, ListGamesResult.class, authToken);
-        return populateGameMap(response.games());
-
+        trueGameMap = response.games();
+        clientGameMap = populateGameMap(response.games());
+        return clientGameMap;
     }
 
     public void createGame(String gameName, String authToken) throws ResponseException{
@@ -118,18 +133,24 @@ public class ServerFacade {
         return status / 100 == 2;
     }
 
-    private HashMap populateGameMap(List<GameData> games){
+    private HashMap populateGameMap(HashMap<Integer,GameData> gameDataMap){
+        ArrayList<GameData> games = new ArrayList<>(gameDataMap.values());
         int gameNum = 1;
         HashMap<Integer, GameInfo> gameMap = new HashMap<Integer, GameInfo>();
         for (GameData i : games){
             GameInfo game = new GameInfo(i.getGameName(), i.getWhiteUsername(), i.getBlackUsername());
             gameMap.put(gameNum, game);
             gameNum++;
-
-
-
-
         }
         return gameMap;
+    }
+
+    private int findTrueGameId(HashMap<Integer,GameData> gameDataMap, String gameName){
+        for (Map.Entry<Integer, GameData> entry : gameDataMap.entrySet()){
+            if(entry.getValue().getGameName().equals(gameName)){
+                return entry.getKey();
+            }
+        }
+        return 0;
     }
 }
