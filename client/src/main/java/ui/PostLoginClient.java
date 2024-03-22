@@ -33,7 +33,7 @@ public class PostLoginClient implements Client{
                 case "creategame" -> createGame(params);
                 case "listgames" -> listGames();
                 case "joingame" -> joinGame(params);
-                case "observe" -> joinObserve();
+                case "observe" -> joinObserve(params);
                 default -> help();
             };
         } catch (ResponseException ex) {
@@ -41,8 +41,19 @@ public class PostLoginClient implements Client{
         }
     }
 
-    private String joinObserve() {
-        return "";
+    private String joinObserve(String ... params) throws ResponseException {
+        sf = new ServerFacade(serverUrl);
+        //update gameMap
+        gameMap = sf.listGames(authToken);
+        if (params.length >= 1) {
+            int gameNum = Integer.valueOf(params[0]);
+            sf.joinGame(authToken, gameNum, null);
+        } else {
+            throw new ResponseException(400, "<GAMEID>");
+        }
+
+        return "Now Observing Game";
+
     }
 
     private String joinGame(String ... params) throws ResponseException {
