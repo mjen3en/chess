@@ -19,6 +19,7 @@ public class PrintBoard {
     public PrintBoard(ChessBoard board, String visitorColor){
         this.board = board;
         this.visitorColor = visitorColor;
+        board.resetBoard();
     }
 
     public void drawBoard(){
@@ -35,14 +36,11 @@ public class PrintBoard {
         //draw bottom headers
         drawHeaders(out);
 
-
-
-
     }
 
     private void drawHeaders(PrintStream out){
         out.print(EMPTY.repeat(4));
-        //out.print(" ");
+        out.print(" ");
 
 
         setTextWhite(out);
@@ -72,8 +70,8 @@ public class PrintBoard {
         //out.print(EMPTY.repeat(prefixLength));
         //out.print(" ");
         printHeaderText(out, headerText);
-        out.print(EMPTY.repeat(suffixLength));
-        //out.print(" ");
+        //out.print(EMPTY.repeat(suffixLength));
+        out.print("   ");
     }
 
 
@@ -119,7 +117,6 @@ public class PrintBoard {
         out.print("|  ");
         out.print(" " + sideHead + " ");
 
-
     }
 
     private void drawSquare(PrintStream out, int boardRow, int boardCol){
@@ -127,9 +124,11 @@ public class PrintBoard {
         if (currentPiece != null){
             //determine pieceType
             String p = determinePieceType(currentPiece);
-            out.print("| " + p + " ");
+            out.print("|  " + p);
         } else {
-            out.print("|" + EMPTY);
+            out.print("|   ");
+
+
         }
     }
 
