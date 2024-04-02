@@ -42,14 +42,14 @@ public class PreLoginClient implements Client{
     }
 
     private String printTestBoard() {
-        var board = new PrintBoard(new ChessBoard(), "WHITE");
+        var board = new PrintBoard(new ChessBoard(), "WHITE", null);
         board.drawBoard();
 
         return "";
     }
 
     private String printFlipBoard() {
-        var board = new PrintBoard(new ChessBoard(), "BLACK");
+        var board = new PrintBoard(new ChessBoard(), "BLACK", null);
         board.drawBoard();
 
         return "";

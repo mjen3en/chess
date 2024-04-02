@@ -3,6 +3,7 @@ package ui;
 import chess.ChessBoard;
 import chess.ChessGame;
 import chess.ChessPiece;
+import chess.ChessPosition;
 import com.sun.nio.sctp.HandlerResult;
 import com.sun.nio.sctp.Notification;
 import com.sun.nio.sctp.NotificationHandler;
@@ -30,7 +31,7 @@ public class GameplayClient implements Client{
     }
     @Override
     public String eval(String input) {
-        var tokens = input.toLowerCase().split(" ");
+        var tokens = input.toLowerCase().split(" " );
         var cmd = (tokens.length > 0) ? tokens[0] : "help";
         var params = Arrays.copyOfRange(tokens, 1, tokens.length);
         return switch (cmd) {
@@ -44,6 +45,24 @@ public class GameplayClient implements Client{
     }
 
     private String showLegalMoves(String[] params) {
+        int col = 1;
+        int row = Integer.parseInt(params[1]);
+        switch (params[0]) {
+            case "a" -> col = 1;
+            case "b" -> col = 2;
+            case "c" -> col = 3;
+            case "d" -> col = 4;
+            case "e" -> col = 5;
+            case "f" -> col = 6;
+            case "g" -> col = 7;
+            case "h" -> col = 8;
+        }
+
+        ChessPosition position = new ChessPosition(row, col);
+
+        PrintBoard pb = new PrintBoard(currentGame.getBoard(), playerColor, position);
+        pb.drawBoard();
+
         return "";
     }
 
@@ -60,10 +79,11 @@ public class GameplayClient implements Client{
     }
 
     private String redraw() {
-        PrintBoard board = new PrintBoard(currentGame.getBoard(),playerColor);
+        PrintBoard board = new PrintBoard(currentGame.getBoard(),playerColor, null);
         board.drawBoard();
         return "";
     }
+
 
     @Override
     public String help() {
@@ -72,7 +92,7 @@ public class GameplayClient implements Client{
                 leave - leave the game
                 makemove - make a chess move
                 resign - give up
-                legalmoves <POSITION> - watch a game on the server
+                legalmoves <ROW,COLUMN> - watch a game on the server
                 """;
     }
 

@@ -7,6 +7,7 @@ import chess.ChessPosition;
 
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Objects;
 
 import static ui.EscapeSequences.*;
@@ -19,10 +20,15 @@ public class PrintBoard {
     private static final int LINE_WIDTH_IN_CHARS = 1;
     private String visitorColor;
 
-    public PrintBoard(ChessBoard board, String visitorColor){
+    ArrayList<ChessPosition> legalMoves;
+
+
+
+    public PrintBoard(ChessBoard board, String visitorColor, ChessPosition position){
         this.board = board;
         this.visitorColor = visitorColor;
-        board.resetBoard();
+        legalMoves = populateLegalMoves(position);
+        //board.resetBoard();
     }
 
     public void drawBoard(){
@@ -102,12 +108,12 @@ public class PrintBoard {
     private  void drawChessBoard(PrintStream out) {
         int sideHead = 1;
         int i = 1;
-        if (visitorColor == "white"){
+        if (Objects.equals(visitorColor, "white")){
              sideHead = 8;
              i = -1;
         }
 
-        if (visitorColor == "black") {
+        if (Objects.equals(visitorColor, "black")) {
             for (int boardRow = 1; boardRow <= BOARD_SIZE_IN_SQUARES; ++boardRow) {
                 setTextWhite(out);
                 drawRowOfSquares(out, boardRow, sideHead);
@@ -150,6 +156,9 @@ public class PrintBoard {
 
     private void drawSquare(PrintStream out, int boardRow, int boardCol){
         var currentPiece = board.getPiece(new ChessPosition(boardRow, boardCol));
+        if (isLegalMove(new ChessPosition(boardRow, boardCol))){
+            setBackgroundMagenta(out);
+        }
         if (currentPiece != null){
             //determine pieceType
             String p = determinePieceType(currentPiece);
@@ -183,19 +192,27 @@ public class PrintBoard {
         return returnPiece;
     }
 
-//    private static void drawVerticalLine(PrintStream out) {
-//
-//        int boardSizeInSpaces = BOARD_SIZE_IN_SQUARES * SQUARE_SIZE_IN_CHARS +
-//                (BOARD_SIZE_IN_SQUARES - 1) * LINE_WIDTH_IN_CHARS;
-//
-//        for (int lineRow = 0; lineRow < LINE_WIDTH_IN_CHARS; ++lineRow) {
-//            setRed(out);
-//            out.print(EMPTY.repeat(boardSizeInSpaces));
-//
-//            setBlack(out);
-//            out.println();
-//        }
-//    }
+
+    private ArrayList<ChessPosition> populateLegalMoves(ChessPosition position){
+        if (position == null){
+            return null;
+        }
+        ChessPiece piece = board.getPiece(position);
+        if (piece == null){
+            return null;
+        }
+
+        ArrayList<ChessPosition> positions = new ArrayList<>();
+        positions.addAll(piece.pieceMoves(board, position));
+        return positions;
+    }
+
+    private boolean isLegalMove(ChessPosition move){
+        if (legalMoves == null){
+            return false;
+        }
+        return legalMoves.contains(move);
+    }
 
 
 
@@ -221,5 +238,9 @@ public class PrintBoard {
     private static void setBlack(PrintStream out) {
         out.print(SET_BG_COLOR_BLACK);
         out.print(SET_TEXT_COLOR_BLACK);
+    }
+
+    private static void setBackgroundMagenta(PrintStream out){
+        out.print(SET_BG_COLOR_MAGENTA);
     }
 }

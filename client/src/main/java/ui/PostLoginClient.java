@@ -115,7 +115,7 @@ public class PostLoginClient implements Client{
 
     @Override
     public String help() {
-        return """
+        return EscapeSequences.SET_TEXT_COLOR_WHITE +  """
                 logout - stop playing for now
                 creategame <GAMENAME> - make a new game
                 listgames - list all games on the server

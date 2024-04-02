@@ -39,7 +39,10 @@ public class ServerFacade {
 //        var pbB = new PrintBoard(new ChessBoard(), "BLACK");
 //        pbW.drawBoard();
 //        pbB.drawBoard();
-        return response.game();
+        ChessGame currentGame = response.game();
+        var pb = new PrintBoard(currentGame.getBoard(), playerColor, null);
+        pb.drawBoard();
+        return currentGame;
     }
 
     public HashMap listGames(String authToken) throws ResponseException {
