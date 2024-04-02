@@ -1,6 +1,7 @@
 package ui;
 
 import chess.ChessBoard;
+import chess.ChessGame;
 import com.google.gson.Gson;
 
 import java.io.*;
@@ -28,16 +29,17 @@ public class ServerFacade {
         serverUrl = url;
     }
 
-    public void joinGame(String authToken, int gameId, String playerColor) throws ResponseException {
+    public ChessGame joinGame(String authToken, int gameId, String playerColor) throws ResponseException {
         var path = "/game";
         String gameName = clientGameMap.get(gameId).gameName();
         int trueId = findTrueGameId(trueGameMap, gameName);
         var request = new JoinGameRequest(playerColor, trueId);
-        var response = this.makeRequest("PUT", path, request, JoinGameResult.class, authToken);
-        var pbW = new PrintBoard(new ChessBoard(), "WHITE");
-        var pbB = new PrintBoard(new ChessBoard(), "BLACK");
-        pbW.drawBoard();
-        pbB.drawBoard();
+        JoinGameResult response = this.makeRequest("PUT", path, request, JoinGameResult.class, authToken);
+//        var pbW = new PrintBoard(new ChessBoard(), "WHITE");
+//        var pbB = new PrintBoard(new ChessBoard(), "BLACK");
+//        pbW.drawBoard();
+//        pbB.drawBoard();
+        return response.game();
     }
 
     public HashMap listGames(String authToken) throws ResponseException {

@@ -1,5 +1,7 @@
 package ui;
 
+import chess.ChessGame;
+
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -12,9 +14,18 @@ public class PostLoginClient implements Client{
 
     public String authToken;
 
+    public ChessGame currentGame;
+
     private HashMap gameMap;
 
+    public String getVisitorColor() {
+        return visitorColor;
+    }
+
+    public String visitorColor;
+
     private String visitorName;
+
 
     PostLoginClient(String serverURL, String authToken){
         this.serverUrl = serverURL;
@@ -47,11 +58,12 @@ public class PostLoginClient implements Client{
         gameMap = sf.listGames(authToken);
         if (params.length >= 1) {
             int gameNum = Integer.valueOf(params[0]);
-            sf.joinGame(authToken, gameNum, null);
+            currentGame = sf.joinGame(authToken, gameNum, null);
         } else {
             throw new ResponseException(400, "<GAMEID>");
         }
 
+        Repl.state = State.INGAME;
         return "Now Observing Game";
 
     }
@@ -62,16 +74,16 @@ public class PostLoginClient implements Client{
         gameMap = sf.listGames(authToken);
         if (params.length >= 2) {
             int gameNum = Integer.valueOf(params[0]);
-            String color = params[1];
-            if (color.equals("BLACK") && color.equals("WHITE")) {
+            visitorColor = params[1];
+            if (!visitorColor.equals("black") && !visitorColor.equals("white")) {
                 throw new ResponseException(400, "Please specify color BLACK or WHITE");
             }
 
-            sf.joinGame(authToken, gameNum, color);
+             currentGame = sf.joinGame(authToken, gameNum, visitorColor);
         } else {
             throw new ResponseException(400, "<GAMEID> <TEAMCOLOR>");
         }
-
+        Repl.state = State.INGAME;
         return "Join Game Successful";
     }
 
@@ -117,6 +129,8 @@ public class PostLoginClient implements Client{
         return authToken;
     }
 
+
+
     private String printMap(HashMap<Integer, GameInfo> gameMap){
         String list = "";
         for (Map.Entry<Integer, GameInfo> i : gameMap.entrySet()){
@@ -125,5 +139,9 @@ public class PostLoginClient implements Client{
             list = list + addition;
         }
         return list;
+    }
+
+    public ChessGame getCurrentGame() {
+        return currentGame;
     }
 }

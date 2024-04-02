@@ -88,7 +88,7 @@ public class GameService {
 
         //update game
         gameDAO.updateGame(updatedGame);
-        return new JoinGameResult();
+        return new JoinGameResult(updatedGame.getGame());
 
     }
 

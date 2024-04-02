@@ -1,8 +1,11 @@
 package ui;
 
+import chess.ChessGame;
 import com.sun.nio.sctp.HandlerResult;
 import com.sun.nio.sctp.Notification;
-import com.sun.nio.sctp.NotificationHandler;
+import ui.websocket.NotificationHandler;
+import webSocketMessages.serverMessages.ServerMessage;
+//import com.sun.nio.sctp.NotificationHandler;
 
 import java.io.PrintStream;
 import java.util.Scanner;
@@ -10,11 +13,13 @@ import java.util.Scanner;
 
 
 
-public class Repl {
+public class Repl implements NotificationHandler {
 
     public static State state = State.SIGNEDOUT;
     private PreLoginClient preClient;
     public PostLoginClient postClient;
+
+    public GameplayClient gameplayClient;
 
     String authToken;
 
@@ -38,10 +43,12 @@ public class Repl {
             switch (state) {
                 case SIGNEDOUT -> result = userInterface(preClient);
                 case SIGNEDIN -> result = userInterface(postClient);
-                // switch to game play UI
+                case INGAME -> result = userInterface(gameplayClient);
             }
             if (state == State.SIGNEDIN){
                 postClient = new PostLoginClient(serverURL, preClient.getAuth());
+            } else if (state == State.INGAME){
+                gameplayClient = new GameplayClient(serverURL, this, postClient.getCurrentGame(), postClient.getVisitorColor());
             }
         }
 
@@ -82,10 +89,13 @@ public class Repl {
     }
 
 
-//    private void updateAuthtoken(){
-//        if (authtoken != ""){
-//            postClient = new PostLoginClient(serverURL)
-//        }
-//    }
+    @Override
+    public void notify(ServerMessage notification) {
+        System.out.println(EscapeSequences.SET_TEXT_COLOR_RED + notification.message());
+        printPrompt();
+
+    }
+
+
 
 }

@@ -1,4 +1,6 @@
 package result;
 
-public record JoinGameResult() {
+import chess.ChessGame;
+
+public record JoinGameResult(ChessGame game) {
 }

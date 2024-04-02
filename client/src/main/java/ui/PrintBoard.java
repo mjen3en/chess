@@ -7,6 +7,8 @@ import chess.ChessPosition;
 
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
+import java.util.Objects;
+
 import static ui.EscapeSequences.*;
 
 public class PrintBoard {
@@ -47,7 +49,7 @@ public class PrintBoard {
         setTextWhite(out);
         String[] headers = {"a", "b", "c", "d", "e", "f", "g", "h"};
 
-        if (visitorColor == "WHITE" || visitorColor == null){
+        if (Objects.equals(visitorColor, "white") || visitorColor == null){
             for (int boardCol = 0; boardCol < BOARD_SIZE_IN_SQUARES; ++boardCol) {
                 drawHeader(out, headers[boardCol]);
 
@@ -59,7 +61,7 @@ public class PrintBoard {
             out.println();
         }
 
-        if (visitorColor == "BLACK"){
+        if (Objects.equals(visitorColor, "black")){
             for (int boardCol = 7; boardCol > -1; --boardCol) {
                 drawHeader(out, headers[boardCol]);
 
@@ -100,12 +102,12 @@ public class PrintBoard {
     private  void drawChessBoard(PrintStream out) {
         int sideHead = 1;
         int i = 1;
-        if (visitorColor == "WHITE"){
+        if (visitorColor == "white"){
              sideHead = 8;
              i = -1;
         }
 
-        if (visitorColor == "BLACK") {
+        if (visitorColor == "black") {
             for (int boardRow = 1; boardRow <= BOARD_SIZE_IN_SQUARES; ++boardRow) {
                 setTextWhite(out);
                 drawRowOfSquares(out, boardRow, sideHead);
