@@ -146,7 +146,7 @@ public class PrintBoard {
         for (int boardCol = 1; boardCol <= BOARD_SIZE_IN_SQUARES; ++boardCol){
             drawSquare(out, boardRow, boardCol);
             out.print(EMPTY.repeat(LINE_WIDTH_IN_CHARS));
-
+            setBackgroundBlack(out);
 
         }
         out.print("|  ");
@@ -158,13 +158,14 @@ public class PrintBoard {
     private void drawSquare(PrintStream out, int boardRow, int boardCol){
         ChessPosition position = new ChessPosition(boardRow, boardCol);
         var currentPiece = board.getPiece(position);
+        out.print("|");
         if (isLegalMove(new ChessMove(startPosition, position, null))){
             setBackgroundMagenta(out);
         }
         if (currentPiece != null){
             //determine pieceType
             String p = determinePieceType(currentPiece);
-            out.print("|  ");
+            out.print("  ");
             switch (currentPiece.getTeamColor()){
                 case BLACK -> setTextRed(out);
                 case WHITE -> setTextBlue(out);
@@ -172,11 +173,11 @@ public class PrintBoard {
             out.print(p);
             setTextWhite(out);
         } else {
-            out.print("|   ");
+            out.print("   ");
 
 
         }
-        setBackgroundBlack(out);
+
     }
 
     private String determinePieceType(ChessPiece piece){
