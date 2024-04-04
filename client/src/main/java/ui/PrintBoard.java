@@ -1,9 +1,6 @@
 package ui;
 
-import chess.ChessBoard;
-import chess.ChessGame;
-import chess.ChessPiece;
-import chess.ChessPosition;
+import chess.*;
 
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
@@ -20,13 +17,16 @@ public class PrintBoard {
     private static final int LINE_WIDTH_IN_CHARS = 1;
     private String visitorColor;
 
-    ArrayList<ChessPosition> legalMoves;
+    ArrayList<ChessMove> legalMoves;
+
+    ChessPosition startPosition;
 
 
 
     public PrintBoard(ChessBoard board, String visitorColor, ChessPosition position){
         this.board = board;
         this.visitorColor = visitorColor;
+        startPosition = position;
         legalMoves = populateLegalMoves(position);
         //board.resetBoard();
     }
@@ -102,7 +102,7 @@ public class PrintBoard {
 
         out.print(player);
 
-        setBlack(out);
+        setBackgroundBlack(out);
     }
 
     private  void drawChessBoard(PrintStream out) {
@@ -151,12 +151,14 @@ public class PrintBoard {
         }
         out.print("|  ");
         out.print(" " + sideHead + " ");
+        setBackgroundBlack(out);
 
     }
 
     private void drawSquare(PrintStream out, int boardRow, int boardCol){
-        var currentPiece = board.getPiece(new ChessPosition(boardRow, boardCol));
-        if (isLegalMove(new ChessPosition(boardRow, boardCol))){
+        ChessPosition position = new ChessPosition(boardRow, boardCol);
+        var currentPiece = board.getPiece(position);
+        if (isLegalMove(new ChessMove(startPosition, position, null))){
             setBackgroundMagenta(out);
         }
         if (currentPiece != null){
@@ -174,6 +176,7 @@ public class PrintBoard {
 
 
         }
+        setBackgroundBlack(out);
     }
 
     private String determinePieceType(ChessPiece piece){
@@ -193,7 +196,7 @@ public class PrintBoard {
     }
 
 
-    private ArrayList<ChessPosition> populateLegalMoves(ChessPosition position){
+    private ArrayList<ChessMove> populateLegalMoves(ChessPosition position){
         if (position == null){
             return null;
         }
@@ -202,12 +205,12 @@ public class PrintBoard {
             return null;
         }
 
-        ArrayList<ChessPosition> positions = new ArrayList<>();
+        ArrayList<ChessMove> positions = new ArrayList<>();
         positions.addAll(piece.pieceMoves(board, position));
         return positions;
     }
 
-    private boolean isLegalMove(ChessPosition move){
+    private boolean isLegalMove(ChessMove move){
         if (legalMoves == null){
             return false;
         }
@@ -235,10 +238,10 @@ public class PrintBoard {
         out.print(SET_TEXT_COLOR_BLUE);
     }
 
-    private static void setBlack(PrintStream out) {
+    private static void setBackgroundBlack(PrintStream out) {
         out.print(SET_BG_COLOR_BLACK);
-        out.print(SET_TEXT_COLOR_BLACK);
     }
+
 
     private static void setBackgroundMagenta(PrintStream out){
         out.print(SET_BG_COLOR_MAGENTA);
