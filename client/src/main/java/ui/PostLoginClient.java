@@ -9,23 +9,16 @@ import java.util.Map;
 public class PostLoginClient implements Client{
 
     private ServerFacade sf;
-
     private String serverUrl;
-
     public String authToken;
-
     public ChessGame currentGame;
-
     private HashMap gameMap;
-
     public String getVisitorColor() {
         return visitorColor;
     }
-
     public String visitorColor;
-
-    private String visitorName;
-
+    public String visitorName;
+    public Integer trueGameID;
 
     PostLoginClient(String serverURL, String authToken){
         this.serverUrl = serverURL;
@@ -58,7 +51,10 @@ public class PostLoginClient implements Client{
         gameMap = sf.listGames(authToken);
         if (params.length >= 1) {
             int gameNum = Integer.valueOf(params[0]);
-            currentGame = sf.joinGame(authToken, gameNum, null);
+            var pair = sf.joinGame(authToken, gameNum, null);
+            currentGame = pair.getFirst();
+            trueGameID = pair.getSecond();
+
         } else {
             throw new ResponseException(400, "<GAMEID>");
         }
@@ -79,10 +75,16 @@ public class PostLoginClient implements Client{
                 throw new ResponseException(400, "Please specify color BLACK or WHITE");
             }
 
-             currentGame = sf.joinGame(authToken, gameNum, visitorColor);
+            var pair = sf.joinGame(authToken, gameNum, visitorColor);
+
+            currentGame = pair.getFirst();
+            trueGameID = pair.getSecond();
         } else {
             throw new ResponseException(400, "<GAMEID> <TEAMCOLOR>");
         }
+
+
+
         Repl.state = State.INGAME;
         return "Join Game Successful";
     }

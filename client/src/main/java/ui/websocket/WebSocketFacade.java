@@ -1,10 +1,14 @@
 package ui.websocket;
 
 import javax.websocket.*;
+import java.io.IOException;
 import java.net.URI;
+
+import chess.ChessGame;
 import com.google.gson.Gson;
 import ui.ResponseException;
 import webSocketMessages.serverMessages.ServerMessage;
+import webSocketMessages.userCommands.UserGameCommand;
 
 
 public class WebSocketFacade extends Endpoint {
@@ -12,11 +16,16 @@ public class WebSocketFacade extends Endpoint {
     private final Session session;
     NotificationHandler notificationHandler;
 
-    public WebSocketFacade(String url, NotificationHandler notificationHandler) throws ResponseException {
+    public ChessGame currentGame;
+
+    String visitorName;
+
+    public WebSocketFacade(String url) throws ResponseException {
         try {
             url = url.replace("http", "ws");
             URI socketURI = new URI(url + "/connect");
-            this.notificationHandler = notificationHandler;
+            //this.notificationHandler = notificationHandler;
+
 
             WebSocketContainer container = ContainerProvider.getWebSocketContainer();
             this.session = container.connectToServer(this, socketURI);
@@ -26,11 +35,11 @@ public class WebSocketFacade extends Endpoint {
                 @Override
                 public void onMessage(String message) {
                     ServerMessage notification = new Gson().fromJson(message, ServerMessage.class);
-
-                    // implement what happens on the three notifcation types
-                    //load_game
-                    //error
-                    //notification
+                    switch (notification.getServerMessageType()){
+                        case LOAD_GAME -> reloadBoard(notification);
+                        //case NOTIFICATION -> ;
+                        //case ERROR ->;
+                    }
 
                     notificationHandler.notify();
                 }
@@ -40,9 +49,45 @@ public class WebSocketFacade extends Endpoint {
         }
     }
 
+    public void joinGame(String authToken, int gameID, String playerColor) throws ResponseException {
+        var color = translateColor(playerColor);
+        try {
+            var command = new UserGameCommand(authToken, UserGameCommand.CommandType.JOIN_PLAYER, color, gameID);
+            this.session.getBasicRemote().sendText(new Gson().toJson(command));
+        } catch (IOException ex){
+            throw new ResponseException(500, ex.getMessage());
+        }
+
+    }
+
+    public ChessGame.TeamColor translateColor (String playerColor) {
+        ChessGame.TeamColor x;
+        switch(playerColor){
+            case "white" -> x = ChessGame.TeamColor.WHITE;
+            case "black" -> x = ChessGame.TeamColor.BLACK;
+            default -> x = null;
+        }
+        return x;
+    }
+
 
     @Override
     public void onOpen(Session session, EndpointConfig endpointConfig) {
         
     }
+
+    private void reloadBoard(ServerMessage notification){
+        //somehow reloads the board
+        currentGame = notification.getGame();
+
+        //tells GamePlayClient to redraw
+
+
+    }
+
+    public void setCurrentGame(ChessGame game){
+        currentGame = game;
+    }
+
+    public ChessGame getCurrentGame(){ return currentGame;}
 }

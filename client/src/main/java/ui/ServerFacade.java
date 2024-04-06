@@ -11,10 +11,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.mysql.cj.conf.ConnectionUrlParser;
 import com.sun.net.httpserver.Headers;
 import model.GameData;
+import org.glassfish.grizzly.utils.Pair;
 import request.*;
 import result.*;
+import ui.websocket.WebSocketFacade;
 
 
 public class ServerFacade {
@@ -29,20 +32,21 @@ public class ServerFacade {
         serverUrl = url;
     }
 
-    public ChessGame joinGame(String authToken, int gameId, String playerColor) throws ResponseException {
+    public Pair<ChessGame, Integer> joinGame(String authToken, int gameId, String playerColor) throws ResponseException {
         var path = "/game";
         String gameName = clientGameMap.get(gameId).gameName();
-        int trueId = findTrueGameId(trueGameMap, gameName);
+        Integer trueId = findTrueGameId(trueGameMap, gameName);
         var request = new JoinGameRequest(playerColor, trueId);
         JoinGameResult response = this.makeRequest("PUT", path, request, JoinGameResult.class, authToken);
-//        var pbW = new PrintBoard(new ChessBoard(), "WHITE");
-//        var pbB = new PrintBoard(new ChessBoard(), "BLACK");
-//        pbW.drawBoard();
-//        pbB.drawBoard();
         ChessGame currentGame = response.game();
+
+        //join with websocket
+        WebSocketFacade ws = new WebSocketFacade(serverUrl);
+        ws.joinGame(authToken, trueId, playerColor);
+
         var pb = new PrintBoard(currentGame.getBoard(), playerColor, null);
         pb.drawBoard();
-        return currentGame;
+        return new Pair<>(currentGame, trueId);
     }
 
     public HashMap listGames(String authToken) throws ResponseException {

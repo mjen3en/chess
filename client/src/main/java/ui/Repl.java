@@ -1,11 +1,8 @@
 package ui;
 
 import chess.ChessGame;
-import com.sun.nio.sctp.HandlerResult;
-import com.sun.nio.sctp.Notification;
 import ui.websocket.NotificationHandler;
 import webSocketMessages.serverMessages.ServerMessage;
-//import com.sun.nio.sctp.NotificationHandler;
 
 import java.io.PrintStream;
 import java.util.Scanner;
@@ -48,7 +45,7 @@ public class Repl implements NotificationHandler {
             if (state == State.SIGNEDIN){
                 postClient = new PostLoginClient(serverURL, preClient.getAuth());
             } else if (state == State.INGAME){
-                gameplayClient = new GameplayClient(serverURL, this, postClient.getCurrentGame(), postClient.getVisitorColor());
+                gameplayClient = new GameplayClient(serverURL, this, postClient.getCurrentGame(), postClient.getVisitorColor(), postClient.authToken, postClient.trueGameID);
             }
         }
 

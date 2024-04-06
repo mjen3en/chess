@@ -1,31 +1,35 @@
 package ui;
 
-import chess.ChessBoard;
 import chess.ChessGame;
-import chess.ChessPiece;
 import chess.ChessPosition;
-import com.sun.nio.sctp.HandlerResult;
-import com.sun.nio.sctp.Notification;
-import com.sun.nio.sctp.NotificationHandler;
 import ui.websocket.WebSocketFacade;
 
 import java.util.Arrays;
 
 public class GameplayClient implements Client{
-    WebSocketFacade wsFacade;
+    WebSocketFacade ws;
 
-    ChessGame currentGame;
+    //ChessGame currentGame;
+    Integer gameID;
 
     String playerColor;
+    String authToken;
 
-    public GameplayClient(String serverURL, ui.websocket.NotificationHandler notificationHandler, ChessGame startingGame, String playerColor ) {
-//        try {
-//            wsFacade = new WebSocketFacade(serverURL, notificationHandler);
-//        } catch (Exception ex){
-//            var msg = ex.toString();
-//            System.out.print(msg);
-//        }
-        currentGame = startingGame;
+    public GameplayClient(String serverURL, ui.websocket.NotificationHandler notificationHandler, ChessGame startingGame, String playerColor, String authToken, Integer gameID) {
+        try {
+            ws = new WebSocketFacade(serverURL);
+
+            //this.currentGame = startingGame;
+            ws.setCurrentGame(startingGame);
+
+            this.authToken = authToken;
+            this.gameID = gameID;
+            //wsFacade.joinGame(authToken, );
+        } catch (Exception ex){
+            var msg = ex.toString();
+            System.out.print(msg);
+        }
+        //currentGame = startingGame;
         this.playerColor = playerColor;
 
     }
@@ -60,7 +64,7 @@ public class GameplayClient implements Client{
 
         ChessPosition position = new ChessPosition(row, col);
 
-        PrintBoard pb = new PrintBoard(currentGame.getBoard(), playerColor, position);
+        PrintBoard pb = new PrintBoard(ws.currentGame.getBoard(), playerColor, position);
         pb.drawBoard();
 
         return "";
@@ -79,7 +83,7 @@ public class GameplayClient implements Client{
     }
 
     private String redraw() {
-        PrintBoard board = new PrintBoard(currentGame.getBoard(),playerColor, null);
+        PrintBoard board = new PrintBoard(ws.currentGame.getBoard(),playerColor, null);
         board.drawBoard();
         return "";
     }

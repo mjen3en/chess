@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import dataAccess.*;
 import request.*;
 import result.*;
+import server.Websocket.WebsocketHandler;
 import service.GameService;
 import service.LoginService;
 import service.RegistrationService;
@@ -21,6 +22,8 @@ public class Server {
     RegistrationService registrationService;
     LoginService loginService;
 
+    WebsocketHandler websocketHandler;
+
 
 
 
@@ -30,6 +33,7 @@ public class Server {
             this.gDao = new MySQLGameDAO();
             this.aDao = new MySQLAuthDAO();
             this.uDao = new MySQLUserDAO();
+            this.websocketHandler = new WebsocketHandler();
 
             gameService = new GameService(gDao, uDao, aDao);
             registrationService = new RegistrationService(aDao, uDao);
@@ -45,6 +49,7 @@ public class Server {
         Spark.port(desiredPort);
 
         Spark.staticFiles.location("web");
+        Spark.webSocket("/connect", websocketHandler);
 
         // Register your endpoints and handle exceptions here.
         Spark.delete("/db", this::clear);
