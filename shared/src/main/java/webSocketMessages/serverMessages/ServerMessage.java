@@ -51,9 +51,7 @@ public class ServerMessage {
     }
 
     public String message() {
-        return "ServerMessage{" +
-                "serverMessageType=" + serverMessageType +
-                '}';
+        return serverMessage;
     }
 
     @Override

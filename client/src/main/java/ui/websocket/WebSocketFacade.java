@@ -6,6 +6,7 @@ import java.net.URI;
 
 import chess.ChessGame;
 import com.google.gson.Gson;
+import ui.PrintBoard;
 import ui.ResponseException;
 import webSocketMessages.serverMessages.ServerMessage;
 import webSocketMessages.userCommands.UserGameCommand;
@@ -18,7 +19,11 @@ public class WebSocketFacade extends Endpoint {
 
     public ChessGame currentGame;
 
+    String playerColor;
+
     String visitorName;
+
+    Boolean updateNeeded;
 
     public WebSocketFacade(String url) throws ResponseException {
         try {
@@ -37,7 +42,7 @@ public class WebSocketFacade extends Endpoint {
                     ServerMessage notification = new Gson().fromJson(message, ServerMessage.class);
                     switch (notification.getServerMessageType()){
                         case LOAD_GAME -> reloadBoard(notification);
-                        //case NOTIFICATION -> ;
+                        case NOTIFICATION -> sendNotification(notification);
                         //case ERROR ->;
                     }
 
@@ -50,6 +55,7 @@ public class WebSocketFacade extends Endpoint {
     }
 
     public void joinGame(String authToken, int gameID, String playerColor) throws ResponseException {
+        this.playerColor = playerColor;
         var color = translateColor(playerColor);
         try {
             var command = new UserGameCommand(authToken, UserGameCommand.CommandType.JOIN_PLAYER, color, gameID);
@@ -80,8 +86,15 @@ public class WebSocketFacade extends Endpoint {
         //somehow reloads the board
         currentGame = notification.getGame();
 
-        //tells GamePlayClient to redraw
 
+        //updateNeeded = true;
+        //redraws the board
+        var pb = new PrintBoard(currentGame.getBoard(), playerColor, null);
+        pb.drawBoard();
+    }
+
+    private void sendNotification(ServerMessage notification){
+        System.out.print(notification.message());
 
     }
 

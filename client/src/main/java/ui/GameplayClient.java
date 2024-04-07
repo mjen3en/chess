@@ -15,6 +15,8 @@ public class GameplayClient implements Client{
     String playerColor;
     String authToken;
 
+
+
     public GameplayClient(String serverURL, ui.websocket.NotificationHandler notificationHandler, ChessGame startingGame, String playerColor, String authToken, Integer gameID) {
         try {
             ws = new WebSocketFacade(serverURL);
