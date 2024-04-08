@@ -8,6 +8,7 @@ import chess.ChessGame;
 import com.google.gson.Gson;
 import ui.PrintBoard;
 import ui.ResponseException;
+import webSocketMessages.serverMessages.LoadGameMessage;
 import webSocketMessages.serverMessages.ServerMessage;
 import webSocketMessages.userCommands.UserGameCommand;
 
@@ -39,14 +40,14 @@ public class WebSocketFacade extends Endpoint {
             this.session.addMessageHandler(new MessageHandler.Whole<String>() {
                 @Override
                 public void onMessage(String message) {
-                    ServerMessage notification = new Gson().fromJson(message, ServerMessage.class);
+                    LoadGameMessage notification = new Gson().fromJson(message, LoadGameMessage.class);
                     switch (notification.getServerMessageType()){
                         case LOAD_GAME -> reloadBoard(notification);
                         case NOTIFICATION -> sendNotification(notification);
                         //case ERROR ->;
                     }
 
-                    notificationHandler.notify();
+                    //notificationHandler.notify();
                 }
             });
         } catch (Exception ex) {
@@ -82,15 +83,17 @@ public class WebSocketFacade extends Endpoint {
         
     }
 
-    private void reloadBoard(ServerMessage notification){
+    private void reloadBoard(LoadGameMessage notification){
         //somehow reloads the board
-        currentGame = notification.getGame();
+        currentGame = notification.game;
 
 
         //updateNeeded = true;
         //redraws the board
         var pb = new PrintBoard(currentGame.getBoard(), playerColor, null);
+        System.out.println();
         pb.drawBoard();
+        System.out.println(notification.message());
     }
 
     private void sendNotification(ServerMessage notification){
@@ -101,6 +104,7 @@ public class WebSocketFacade extends Endpoint {
     public void setCurrentGame(ChessGame game){
         currentGame = game;
     }
+
 
     public ChessGame getCurrentGame(){ return currentGame;}
 }

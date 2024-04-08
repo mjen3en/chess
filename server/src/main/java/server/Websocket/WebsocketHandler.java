@@ -9,6 +9,7 @@ import dataAccess.MySQLGameDAO;
 import model.GameData;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
 import org.eclipse.jetty.websocket.api.annotations.WebSocket;
+import webSocketMessages.serverMessages.LoadGameMessage;
 import webSocketMessages.serverMessages.ServerMessage;
 import webSocketMessages.userCommands.*;
 import org.eclipse.jetty.websocket.api.Session;
@@ -44,14 +45,14 @@ public class WebsocketHandler {
         connections.add(visitorName, session);
 
         //send LOAD_GAME thing
-        var loadNotification = new ServerMessage(ServerMessage.ServerMessageType.LOAD_GAME, "");
-        loadNotification.setGame(getGame(action.getGameID()));
-        connections.broadcast(visitorName, loadNotification);
+        var loadNotification = new LoadGameMessage(getGame(action.getGameID()));
+        //loadNotification.setGame(getGame(action.getGameID()));
+        connections.broadcast("", loadNotification);
 
         // notify other players/observers
-        var message = String.format("%s has entered the game", visitorName);
-        var notification = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION, message);
-        connections.broadcast(visitorName, notification);
+//        var message = String.format("%s has entered the game", visitorName);
+//        var notification = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION, message);
+//        connections.broadcast(visitorName, notification);
 
     }
 
