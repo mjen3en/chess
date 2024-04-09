@@ -2,10 +2,7 @@ package server.Websocket;
 
 import chess.ChessGame;
 import com.google.gson.Gson;
-import dataAccess.AuthDAO;
-import dataAccess.DataAccessException;
-import dataAccess.MySQLAuthDAO;
-import dataAccess.MySQLGameDAO;
+import dataAccess.*;
 import model.GameData;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
 import org.eclipse.jetty.websocket.api.annotations.WebSocket;
@@ -31,13 +28,37 @@ public class WebsocketHandler {
             case JOIN_PLAYER -> joinGame(action, session);
             // make_move
             // leave
+            case LEAVE -> leaveGame(action, session);
             // resign
         }
     }
 
+    private void leaveGame(UserGameCommand action, Session session) throws DataAccessException, IOException {
+        checkAuth(action.getAuthString());
+        GameDAO gDAO = new MySQLGameDAO();
+        GameData oldGame = gDAO.getGame(action.getGameID());
+
+        String toDelete = getUsername(action);
+
+        //checks to see if user is white or black
+        String whiteUsername = compareUsernames(toDelete, oldGame.getWhiteUsername());
+        String blackUsername = compareUsernames(toDelete, oldGame.getBlackUsername());
+
+        //update game
+        GameData updatedGame = new GameData(action.getGameID(), whiteUsername, blackUsername, oldGame.getGameName(), oldGame.getGame());
+        gDAO.updateGame(updatedGame);
+
+        //send notification
+        var message = String.format("%s has entered the game", toDelete);
+        var notification = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION, message);
+        connections.broadcast(toDelete, notification);
+
+
+
+    }
+
     private void joinGame(UserGameCommand action,  Session session) throws IOException, DataAccessException {
-        AuthDAO aDAO = new MySQLAuthDAO();
-        String visitorName =  aDAO.getAuthData(action.getAuthString()).username;
+        String visitorName = getUsername(action);
         //check authToken
         checkAuth(action.getAuthString());
         //check joined
@@ -47,12 +68,12 @@ public class WebsocketHandler {
         //send LOAD_GAME thing
         var loadNotification = new LoadGameMessage(getGame(action.getGameID()));
         //loadNotification.setGame(getGame(action.getGameID()));
-        connections.broadcast("", loadNotification);
+        connections.broadcast(visitorName, loadNotification);
 
         // notify other players/observers
-//        var message = String.format("%s has entered the game", visitorName);
-//        var notification = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION, message);
-//        connections.broadcast(visitorName, notification);
+        var message = String.format("%s has entered the game", visitorName);
+        var notification = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION, message);
+        connections.broadcast(visitorName, notification);
 
     }
 
@@ -89,5 +110,18 @@ public class WebsocketHandler {
         var dao = new MySQLGameDAO();
         GameData gameData = dao.getGame(gameID);
         return gameData.getGame();
+    }
+
+    private String getUsername(UserGameCommand action) throws DataAccessException {
+        AuthDAO aDAO = new MySQLAuthDAO();
+        return aDAO.getAuthData(action.getAuthString()).username;
+    }
+
+    private String compareUsernames(String toDelete, String oldName){
+        if (oldName.equals(toDelete)){
+            return null;
+        }
+        return oldName;
+
     }
 }

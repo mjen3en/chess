@@ -84,11 +84,9 @@ public class WebSocketFacade extends Endpoint {
     }
 
     private void reloadBoard(LoadGameMessage notification){
-        //somehow reloads the board
+        //saves the board
         currentGame = notification.game;
 
-
-        //updateNeeded = true;
         //redraws the board
         var pb = new PrintBoard(currentGame.getBoard(), playerColor, null);
         System.out.println();
