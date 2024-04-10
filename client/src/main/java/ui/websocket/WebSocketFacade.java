@@ -22,11 +22,15 @@ public class WebSocketFacade extends Endpoint {
 
     String playerColor;
 
-    String visitorName;
+    String authToken;
 
-    Boolean updateNeeded;
+    int gameID;
 
-    public WebSocketFacade(String url) throws ResponseException {
+    public WebSocketFacade(String url, String authToken, String playerColor, Integer gameID) throws ResponseException {
+        this.authToken = authToken;
+        this.playerColor = playerColor;
+        this.gameID = gameID;
+
         try {
             url = url.replace("http", "ws");
             URI socketURI = new URI(url + "/connect");
@@ -55,8 +59,11 @@ public class WebSocketFacade extends Endpoint {
         }
     }
 
-    public void joinGame(String authToken, int gameID, String playerColor) throws ResponseException {
-        this.playerColor = playerColor;
+    public void joinGame() throws ResponseException {
+//        this.authToken = authToken;
+//        this.playerColor = playerColor;
+//        this.gameID = gameID;
+
         var color = translateColor(playerColor);
         try {
             var command = new UserGameCommand(authToken, UserGameCommand.CommandType.JOIN_PLAYER, color, gameID);
@@ -65,6 +72,17 @@ public class WebSocketFacade extends Endpoint {
             throw new ResponseException(500, ex.getMessage());
         }
 
+    }
+
+    public void leaveGame() throws ResponseException {
+        var color = translateColor(playerColor);
+
+        try {
+            var command = new UserGameCommand(authToken, UserGameCommand.CommandType.LEAVE, color, gameID);
+            this.session.getBasicRemote().sendText(new Gson().toJson(command));
+        } catch (IOException ex){
+            throw new ResponseException(500, ex.getMessage());
+        }
     }
 
     public ChessGame.TeamColor translateColor (String playerColor) {
@@ -102,6 +120,7 @@ public class WebSocketFacade extends Endpoint {
     public void setCurrentGame(ChessGame game){
         currentGame = game;
     }
+
 
 
     public ChessGame getCurrentGame(){ return currentGame;}

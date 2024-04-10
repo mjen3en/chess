@@ -49,10 +49,9 @@ public class WebsocketHandler {
         gDAO.updateGame(updatedGame);
 
         //send notification
-        var message = String.format("%s has entered the game", toDelete);
+        var message = String.format("%s has left the game", toDelete);
         var notification = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION, message);
-        connections.broadcast(toDelete, notification);
-
+        connections.broadcast("", notification);
 
 
     }
@@ -118,6 +117,10 @@ public class WebsocketHandler {
     }
 
     private String compareUsernames(String toDelete, String oldName){
+        if (oldName == null){
+            return null;
+        }
+
         if (oldName.equals(toDelete)){
             return null;
         }

@@ -19,7 +19,7 @@ public class GameplayClient implements Client{
 
     public GameplayClient(String serverURL, ui.websocket.NotificationHandler notificationHandler, ChessGame startingGame, String playerColor, String authToken, Integer gameID) {
         try {
-            ws = new WebSocketFacade(serverURL);
+            ws = new WebSocketFacade(serverURL, authToken, playerColor, gameID);
 
             //this.currentGame = startingGame;
             ws.setCurrentGame(startingGame);
@@ -37,17 +37,21 @@ public class GameplayClient implements Client{
     }
     @Override
     public String eval(String input) {
-        var tokens = input.toLowerCase().split(" " );
-        var cmd = (tokens.length > 0) ? tokens[0] : "help";
-        var params = Arrays.copyOfRange(tokens, 1, tokens.length);
-        return switch (cmd) {
-            case "redraw" -> redraw();
-            case "leave" -> leave();
-            case "makemove" -> makeMove(params);
-            case "resign" -> resign();
-            case "legalmoves" -> showLegalMoves(params);
-            default -> help();
-        };
+        try {
+            var tokens = input.toLowerCase().split(" ");
+            var cmd = (tokens.length > 0) ? tokens[0] : "help";
+            var params = Arrays.copyOfRange(tokens, 1, tokens.length);
+            return switch (cmd) {
+                case "redraw" -> redraw();
+                case "leave" -> leave();
+                case "makemove" -> makeMove(params);
+                case "resign" -> resign();
+                case "legalmoves" -> showLegalMoves(params);
+                default -> help();
+            };
+        } catch (Exception ex) {
+            return ex.getMessage();
+        }
     }
 
     private String showLegalMoves(String[] params) {
@@ -80,7 +84,8 @@ public class GameplayClient implements Client{
         return "";
     }
 
-    private String leave() {
+    private String leave() throws ResponseException {
+        ws.leaveGame();
         return "";
     }
 

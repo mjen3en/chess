@@ -41,8 +41,8 @@ public class ServerFacade {
         ChessGame currentGame = response.game();
 
         //join with websocket
-        WebSocketFacade ws = new WebSocketFacade(serverUrl);
-        ws.joinGame(authToken, trueId, playerColor);
+        WebSocketFacade ws = new WebSocketFacade(serverUrl, authToken, playerColor, trueId);
+        ws.joinGame();
 
         var pb = new PrintBoard(currentGame.getBoard(), playerColor, null);
         pb.drawBoard();
