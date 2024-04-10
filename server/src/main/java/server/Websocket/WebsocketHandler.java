@@ -1,11 +1,12 @@
 package server.Websocket;
 
-import chess.ChessGame;
+import chess.*;
 import com.google.gson.Gson;
 import dataAccess.*;
 import model.GameData;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
 import org.eclipse.jetty.websocket.api.annotations.WebSocket;
+import service.GameService;
 import webSocketMessages.serverMessages.LoadGameMessage;
 import webSocketMessages.serverMessages.ServerMessage;
 import webSocketMessages.userCommands.*;
@@ -20,17 +21,53 @@ public class WebsocketHandler {
     private final ConnectionManager connections = new ConnectionManager();
 
     @OnWebSocketMessage
-    public void onMessage(Session session, String message) throws IOException, DataAccessException {
+    public void onMessage(Session session, String message) throws IOException, DataAccessException, InvalidMoveException {
         UserGameCommand action = new Gson().fromJson(message, UserGameCommand.class);
         switch (action.getCommandType()) {
             // implement user commands
-            // join_player
             case JOIN_PLAYER -> joinGame(action, session);
-            // make_move
-            // leave
+            //case JOIN_OBSERVER ->
+            case MAKE_MOVE -> makeMove(action, session);
             case LEAVE -> leaveGame(action, session);
             // resign
         }
+    }
+
+    private void makeMove(UserGameCommand action, Session session) throws DataAccessException, InvalidMoveException, IOException {
+        Integer gameID = action.getGameID();
+        ChessMove move = action.getMove();
+
+        //check auth
+        checkAuth(action.getAuthString());
+        String username = getUsername(action);
+
+        GameDAO gDAO = new MySQLGameDAO();
+        GameData data = gDAO.getGame(gameID);
+        ChessGame game = data.getGame();
+        ChessPiece piece = game.getBoard().getPiece(move.getStartPosition());
+
+        //check opponent
+        if (data.getWhiteUsername() == null || data.getBlackUsername() == null){
+            throw new InvalidMoveException("Can't make move without opponent");
+        }
+
+        game.makeMove(action.getMove());
+        
+        //updateGame
+        GameData updatedGame = new GameData(data.getGameID(), data.getWhiteUsername(), data.getBlackUsername(), data.getGameName(), game);
+        gDAO.updateGame(updatedGame);
+
+        //send load game
+        var loadGameMessage = new LoadGameMessage(updatedGame.getGame());
+        connections.broadcast("", loadGameMessage);
+
+        //send notification
+        String start = move.getStartPosition().toString();
+        String end = move.getEndPosition().toString();
+        String message = String.format("%1s moved %2s from %3s to %4s", username, piece.toString(), start, end);
+        var notification = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION, message);
+        connections.broadcast("", notification);
+
     }
 
     private void leaveGame(UserGameCommand action, Session session) throws DataAccessException, IOException {
@@ -51,7 +88,7 @@ public class WebsocketHandler {
         //send notification
         var message = String.format("%s has left the game", toDelete);
         var notification = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION, message);
-        connections.broadcast("", notification);
+        connections.broadcast(toDelete, notification);
 
 
     }
@@ -127,4 +164,5 @@ public class WebsocketHandler {
         return oldName;
 
     }
+
 }

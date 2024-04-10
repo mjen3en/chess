@@ -5,6 +5,7 @@ import ui.websocket.NotificationHandler;
 import webSocketMessages.serverMessages.ServerMessage;
 
 import java.io.PrintStream;
+import java.util.Objects;
 import java.util.Scanner;
 
 
@@ -74,6 +75,10 @@ public class Repl implements NotificationHandler {
             state = State.SIGNEDOUT;
             var msg = e.toString();
             System.out.print(msg);
+        }
+
+        if (Objects.equals(result, "You left the game")){
+            state = State.SIGNEDIN;
         }
 
         return result;

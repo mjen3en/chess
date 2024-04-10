@@ -1,6 +1,7 @@
 package webSocketMessages.userCommands;
 
 import chess.ChessGame;
+import chess.ChessMove;
 import com.google.gson.Gson;
 
 import java.util.Objects;
@@ -45,6 +46,16 @@ public class UserGameCommand {
     protected CommandType commandType;
 
     private final String authToken;
+
+    public ChessMove getMove() {
+        return move;
+    }
+
+    public void setMove(ChessMove move) {
+        this.move = move;
+    }
+
+    public ChessMove move;
 
 
 

@@ -1,7 +1,9 @@
 package ui;
 
 import chess.ChessGame;
+import chess.ChessMove;
 import chess.ChessPosition;
+import org.junit.jupiter.api.AfterAll;
 import ui.websocket.WebSocketFacade;
 
 import java.util.Arrays;
@@ -44,7 +46,7 @@ public class GameplayClient implements Client{
             return switch (cmd) {
                 case "redraw" -> redraw();
                 case "leave" -> leave();
-                case "makemove" -> makeMove(params);
+                case "move" -> makeMove(params);
                 case "resign" -> resign();
                 case "legalmoves" -> showLegalMoves(params);
                 default -> help();
@@ -55,18 +57,8 @@ public class GameplayClient implements Client{
     }
 
     private String showLegalMoves(String[] params) {
-        int col = 1;
+        int col = translateLet(params[0]);
         int row = Integer.parseInt(params[1]);
-        switch (params[0]) {
-            case "a" -> col = 1;
-            case "b" -> col = 2;
-            case "c" -> col = 3;
-            case "d" -> col = 4;
-            case "e" -> col = 5;
-            case "f" -> col = 6;
-            case "g" -> col = 7;
-            case "h" -> col = 8;
-        }
 
         ChessPosition position = new ChessPosition(row, col);
 
@@ -80,13 +72,25 @@ public class GameplayClient implements Client{
         return "";
     }
 
-    private String makeMove(String[] params) {
+    private String makeMove(String[] params) throws ResponseException {
+        int col = translateLet(params[0]);
+        int row = Integer.parseInt(params[1]);
+        ChessPosition start = new ChessPosition(row, col);
+        int col2 = translateLet(params[2]);
+        int row2 = Integer.parseInt(params[3]);
+        ChessPosition end = new ChessPosition(row2, col2);
+
+        ChessMove move = new ChessMove(start, end, null);
+
+        ws.makeMove(move);
+
         return "";
     }
 
     private String leave() throws ResponseException {
         ws.leaveGame();
-        return "";
+
+        return "You left the game";
     }
 
     private String redraw() {
@@ -101,14 +105,30 @@ public class GameplayClient implements Client{
         return """
                 redraw - redraw the current chessboard
                 leave - leave the game
-                makemove - make a chess move
+                move <COLUMN ROW> <COLUMN ROW> - make a chess move
                 resign - give up
-                legalmoves <ROW,COLUMN> - watch a game on the server
+                legalmoves <COLUMN ROW> - watch a game on the server
                 """;
     }
 
     @Override
     public String getAuth() {
         return null;
+    }
+
+
+    private Integer translateLet(String i){
+        Integer col = 0;
+        switch (i) {
+            case "a" -> col = 1;
+            case "b" -> col = 2;
+            case "c" -> col = 3;
+            case "d" -> col = 4;
+            case "e" -> col = 5;
+            case "f" -> col = 6;
+            case "g" -> col = 7;
+            case "h" -> col = 8;
+        }
+        return col;
     }
 }
