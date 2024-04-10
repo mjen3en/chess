@@ -108,15 +108,18 @@ public class PrintBoard {
     private  void drawChessBoard(PrintStream out) {
         int sideHead = 1;
         int i = 1;
+
+        boolean white = false;
         if (Objects.equals(visitorColor, "white")){
              sideHead = 8;
              i = -1;
+             white = true;
         }
 
         if (Objects.equals(visitorColor, "black")) {
             for (int boardRow = 1; boardRow <= BOARD_SIZE_IN_SQUARES; ++boardRow) {
                 setTextWhite(out);
-                drawRowOfSquares(out, boardRow, sideHead);
+                drawRowOfSquares(out, boardRow, sideHead, white);
                 out.println();
                 sideHead = sideHead + i;
 
@@ -127,7 +130,7 @@ public class PrintBoard {
         } else {
             for (int boardRow = 8; boardRow > 0; --boardRow) {
                 setTextWhite(out);
-                drawRowOfSquares(out, boardRow, sideHead);
+                drawRowOfSquares(out, boardRow, sideHead, white);
                 out.println();
                 sideHead = sideHead + i;
 
@@ -139,19 +142,32 @@ public class PrintBoard {
         }
     }
 
-    private void drawRowOfSquares(PrintStream out, int boardRow, int sideHead) {
+    private void drawRowOfSquares(PrintStream out, int boardRow, int sideHead, boolean white) {
 
         out.print(" " + sideHead + " ");
         out.print(EMPTY.repeat(LINE_WIDTH_IN_CHARS));
-        for (int boardCol = 1; boardCol <= BOARD_SIZE_IN_SQUARES; ++boardCol){
-            drawSquare(out, boardRow, boardCol);
-            out.print(EMPTY.repeat(LINE_WIDTH_IN_CHARS));
+        if (white) {
+            for (int boardCol = 1; boardCol <= BOARD_SIZE_IN_SQUARES; ++boardCol) {
+                drawSquare(out, boardRow, boardCol);
+                out.print(EMPTY.repeat(LINE_WIDTH_IN_CHARS));
+                setBackgroundBlack(out);
+
+            }
+            out.print("|  ");
+            out.print(" " + sideHead + " ");
+            setBackgroundBlack(out);
+        } else {
+            for (int boardCol = 8; boardCol >= 1; --boardCol) {
+                drawSquare(out, boardRow, boardCol);
+                out.print(EMPTY.repeat(LINE_WIDTH_IN_CHARS));
+                setBackgroundBlack(out);
+
+            }
+            out.print("|  ");
+            out.print(" " + sideHead + " ");
             setBackgroundBlack(out);
 
         }
-        out.print("|  ");
-        out.print(" " + sideHead + " ");
-        setBackgroundBlack(out);
 
     }
 

@@ -105,7 +105,7 @@ public class PostLoginClient implements Client{
             throw new ResponseException(400, "needs Game Name");
         }
 
-        return "Game Creation Successful";
+        return listGames();
     }
 
     private String logout(String authToken) throws ResponseException {
@@ -134,7 +134,8 @@ public class PostLoginClient implements Client{
 
 
     private String printMap(HashMap<Integer, GameInfo> gameMap){
-        String list = "";
+        String list = "GAMEID  GAMENAME  WHITE  BLACK \n";
+
         for (Map.Entry<Integer, GameInfo> i : gameMap.entrySet()){
             GameInfo info = i.getValue();
             String addition = i.getKey().toString() + " " + info.gameName() + ": " + info.player1() + " vs " + info.player2() + " \n";

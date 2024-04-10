@@ -52,7 +52,7 @@ public class WebsocketHandler {
         }
 
         game.makeMove(action.getMove());
-        
+
         //updateGame
         GameData updatedGame = new GameData(data.getGameID(), data.getWhiteUsername(), data.getBlackUsername(), data.getGameName(), game);
         gDAO.updateGame(updatedGame);
