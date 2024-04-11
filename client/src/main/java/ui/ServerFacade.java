@@ -1,6 +1,5 @@
 package ui;
 
-import chess.ChessBoard;
 import chess.ChessGame;
 import com.google.gson.Gson;
 
@@ -8,11 +7,9 @@ import java.io.*;
 import java.net.*;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
+
 import java.util.Map;
 
-import com.mysql.cj.conf.ConnectionUrlParser;
-import com.sun.net.httpserver.Headers;
 import model.GameData;
 import org.glassfish.grizzly.utils.Pair;
 import request.*;
