@@ -17,6 +17,14 @@ public class ChessGame {
         return gameOver;
     }
 
+    public boolean verifyMate(){
+
+        if (isInCheckmate(turn)){
+            gameOver = true;
+        }
+        return gameOver;
+    }
+
     public void setGameOver(boolean gameOver) {
         this.gameOver = gameOver;
     }

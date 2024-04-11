@@ -69,8 +69,10 @@ public class GameplayClient implements Client{
         return "";
     }
 
-    private String resign() {
-        return "";
+    private String resign() throws ResponseException {
+
+        ws.resign();
+        return "You resigned";
     }
 
     private String makeMove(String[] params) throws ResponseException {

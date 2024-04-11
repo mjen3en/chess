@@ -133,6 +133,19 @@ public class WebsocketHandler {
         game.getBoard().refreshPieceMaps();
         game.makeMove(action.getMove());
 
+        //check checkmate/stalemate
+        if (game.verifyMate()) {
+            String message = String.format("Game Over: %s is in Checkmate", game.getTeamTurn().toString());
+            var gameOver = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION, message);
+            connections.broadcast("", gameOver, gameID);
+        };
+
+        if (game.isInCheck(game.getTeamTurn())){
+            String message = String.format("%s is in Check", game.getTeamTurn().toString());
+            var check = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION, message);
+            connections.broadcast("", check, gameID);
+        }
+
 
         //updateGame
         GameData updatedGame = new GameData(data.getGameID(), data.getWhiteUsername(), data.getBlackUsername(), data.getGameName(), game);
@@ -188,7 +201,7 @@ public class WebsocketHandler {
         String visitorName = getUsername(action);
         //check authToken
         checkAuth(action.getAuthString(), session);
-        String message = String.format("%s has entered the game", visitorName);
+        String message = String.format("%1s has entered the game as %2s", visitorName, action.getColor().toString());
 
         //check joined
         verifyJoined(visitorName, action.getGameID(), action.getColor(), session);
