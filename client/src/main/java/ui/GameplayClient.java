@@ -3,6 +3,7 @@ package ui;
 import chess.ChessGame;
 import chess.ChessMove;
 import chess.ChessPosition;
+import chess.InvalidMoveException;
 import org.junit.jupiter.api.AfterAll;
 import ui.websocket.WebSocketFacade;
 

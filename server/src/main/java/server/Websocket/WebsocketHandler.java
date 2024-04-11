@@ -21,15 +21,33 @@ public class WebsocketHandler {
     private final ConnectionManager connections = new ConnectionManager();
 
     @OnWebSocketMessage
-    public void onMessage(Session session, String message) throws IOException, DataAccessException, InvalidMoveException {
+    public void onMessage(Session session, String message)  {
         UserGameCommand action = new Gson().fromJson(message, UserGameCommand.class);
-        switch (action.getCommandType()) {
-            // implement user commands
-            case JOIN_PLAYER -> joinGame(action, session);
-            //case JOIN_OBSERVER ->
-            case MAKE_MOVE -> makeMove(action, session);
-            case LEAVE -> leaveGame(action, session);
-            // resign
+        try {
+            switch (action.getCommandType()) {
+                // implement user commands
+                case JOIN_PLAYER -> joinGame(action, session);
+                //case JOIN_OBSERVER ->
+                case MAKE_MOVE -> makeMove(action, session);
+                case LEAVE -> leaveGame(action, session);
+                // resign
+            }
+        } catch(Exception ex){
+            String notify = ex.getMessage();
+            errorMessage(notify, action);
+        }
+
+    }
+
+    private void errorMessage(String notify, UserGameCommand action){
+        try {
+            String username = getUsername(action);
+            String message = "Error: " + notify;
+            var notification = new ServerMessage(ServerMessage.ServerMessageType.ERROR, message);
+
+            connections.messageForYou(username, notification);
+        } catch(Exception ex){
+            // idk
         }
     }
 

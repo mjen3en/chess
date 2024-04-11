@@ -7,6 +7,7 @@ import java.net.URI;
 
 import chess.ChessGame;
 import chess.ChessMove;
+import chess.InvalidMoveException;
 import com.google.gson.Gson;
 import ui.PrintBoard;
 import ui.ResponseException;
@@ -14,8 +15,7 @@ import webSocketMessages.serverMessages.LoadGameMessage;
 import webSocketMessages.serverMessages.ServerMessage;
 import webSocketMessages.userCommands.UserGameCommand;
 
-import static ui.EscapeSequences.SET_TEXT_COLOR_GREEN;
-import static ui.EscapeSequences.SET_TEXT_COLOR_WHITE;
+import static ui.EscapeSequences.*;
 
 
 public class WebSocketFacade extends Endpoint {
@@ -57,7 +57,7 @@ public class WebSocketFacade extends Endpoint {
                     switch (notification.getServerMessageType()){
                         case LOAD_GAME -> reloadBoard(notification);
                         case NOTIFICATION -> sendNotification(notification);
-                        //case ERROR ->;
+                        case ERROR -> sendError(notification);
                     }
 
                     //notificationHandler.notify();
@@ -66,6 +66,15 @@ public class WebSocketFacade extends Endpoint {
         } catch (Exception ex) {
             throw new ResponseException(500, ex.getMessage());
         }
+    }
+
+    private void sendError(LoadGameMessage notification) {
+        System.out.println();
+        System.out.print(SET_TEXT_COLOR_RED);
+        System.out.println(notification.message());
+        System.out.print(SET_TEXT_COLOR_WHITE);
+        System.out.print("\n" + ">>> ");
+
     }
 
     public void joinGame() throws ResponseException {
@@ -163,4 +172,6 @@ public class WebSocketFacade extends Endpoint {
         //out.print(SET_BG_COLOR_WHITE);
         out.print(SET_TEXT_COLOR_GREEN);
     }
+
+
 }

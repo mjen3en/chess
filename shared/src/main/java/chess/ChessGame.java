@@ -96,7 +96,7 @@ public class ChessGame {
         }
            Collection<ChessMove> valid =  validMoves(move.getStartPosition());
            if (!(valid.contains(move)) || turn != board.getPiece(move.getStartPosition()).getTeamColor()) {
-               throw new InvalidMoveException();
+               throw new InvalidMoveException("Move not valid");
         }
 
            if (board.getPiece(move.getEndPosition()) != null){
