@@ -170,6 +170,7 @@ public class Server {
     }
 
     private void setResponseCode(DataAccessException ex, Response response){
+        websocketHandler.errorMessage(ex);
         if (Objects.equals(ex.getMessage(), "Error: bad request")) {
             response.status(400);
         } else if (Objects.equals(ex.getMessage(), "Error: already taken")){

@@ -7,6 +7,7 @@ import model.GameData;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
 import org.eclipse.jetty.websocket.api.annotations.WebSocket;
 import service.GameService;
+import webSocketMessages.serverMessages.ErrorMessage;
 import webSocketMessages.serverMessages.LoadGameMessage;
 import webSocketMessages.serverMessages.ServerMessage;
 import webSocketMessages.userCommands.*;
@@ -20,9 +21,11 @@ public class WebsocketHandler {
 
     private final ConnectionManager connections = new ConnectionManager();
 
+    public UserGameCommand action;
+
     @OnWebSocketMessage
-    public void onMessage(Session session, String message)  {
-        UserGameCommand action = new Gson().fromJson(message, UserGameCommand.class);
+    public void onMessage(Session session, String message) throws IOException {
+        action = new Gson().fromJson(message, UserGameCommand.class);
         try {
             switch (action.getCommandType()) {
                 // implement user commands
@@ -33,20 +36,22 @@ public class WebsocketHandler {
                 // resign
             }
         } catch(Exception ex){
-            String notify = ex.getMessage();
-            errorMessage(notify, action);
+            var errorMessage = new ErrorMessage("ERROR" + ex.getMessage());
+            session.getRemote().sendString(new Gson().toJson(errorMessage));
+
         }
 
     }
 
-    private void errorMessage(String notify, UserGameCommand action){
+    public void errorMessage(Exception ex){
+        String notify = ex.getMessage();
         try {
             String username = getUsername(action);
             String message = "Error: " + notify;
             var notification = new ServerMessage(ServerMessage.ServerMessageType.ERROR, message);
 
             connections.messageForYou(username, notification);
-        } catch(Exception ex){
+        } catch(Exception exception){
             // idk
         }
     }
@@ -56,7 +61,7 @@ public class WebsocketHandler {
         ChessMove move = action.getMove();
 
         //check auth
-        checkAuth(action.getAuthString());
+        checkAuth(action.getAuthString(), session);
         String username = getUsername(action);
 
         GameDAO gDAO = new MySQLGameDAO();
@@ -66,7 +71,8 @@ public class WebsocketHandler {
 
         //check opponent
         if (data.getWhiteUsername() == null || data.getBlackUsername() == null){
-            throw new InvalidMoveException("Can't make move without opponent");
+            var errorMessage = new ErrorMessage("ERROR: Can't move without opponent");
+            session.getRemote().sendString(new Gson().toJson(errorMessage));
         }
 
         game.getBoard().refreshPieceMaps();
@@ -91,7 +97,7 @@ public class WebsocketHandler {
     }
 
     private void leaveGame(UserGameCommand action, Session session) throws DataAccessException, IOException {
-        checkAuth(action.getAuthString());
+        checkAuth(action.getAuthString(), session);
         GameDAO gDAO = new MySQLGameDAO();
         GameData oldGame = gDAO.getGame(action.getGameID());
 
@@ -116,49 +122,59 @@ public class WebsocketHandler {
     private void joinGame(UserGameCommand action,  Session session) throws IOException, DataAccessException {
         String visitorName = getUsername(action);
         //check authToken
-        checkAuth(action.getAuthString());
+        checkAuth(action.getAuthString(), session);
         //check joined
-        verifyJoined(visitorName, action.getGameID(), action.getColor());
-        connections.add(visitorName, session);
+        String message = String.format("%s has entered the game", visitorName);
+        //if observing
+        if (action.getColor() == null){
+            connections.add(visitorName, session);
+            message = String.format("%s is observing the game", visitorName);
+        } else {
+
+            verifyJoined(visitorName, action.getGameID(), action.getColor(), session);
+            connections.add(visitorName, session);
+        }
 
         //send LOAD_GAME thing
         var loadNotification = new LoadGameMessage(getGame(action.getGameID()));
         //loadNotification.setGame(getGame(action.getGameID()));
-        connections.broadcast(visitorName, loadNotification);
+        connections.broadcast("", loadNotification);
 
         // notify other players/observers
-        var message = String.format("%s has entered the game", visitorName);
         var notification = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION, message);
         connections.broadcast(visitorName, notification);
 
     }
 
-    private void checkAuth(String authToken) throws DataAccessException {
+    private void checkAuth(String authToken, Session session) throws DataAccessException, IOException {
         var dao = new MySQLAuthDAO();
         if (!dao.checkAuthToken(authToken)){
-            throw new DataAccessException("Unauthorized");
+            var errorMessage = new ErrorMessage("ERROR: Unauthorized");
+            session.getRemote().sendString(new Gson().toJson(errorMessage));
+
         }
 
     }
 
-    public void verifyJoined(String visitorName, int gameId, ChessGame.TeamColor color) throws DataAccessException, IOException {
+    public void verifyJoined(String visitorName, int gameId, ChessGame.TeamColor color, Session session) throws DataAccessException, IOException {
         var dao = new MySQLGameDAO();
         GameData gameData = dao.getGame(gameId);
         switch(color){
-            case WHITE -> checkWhiteUsername(visitorName, gameData);
-            case BLACK -> checkBlackUsername(visitorName, gameData);
+            case WHITE -> checkWhiteUsername(visitorName, gameData, session);
+            case BLACK -> checkBlackUsername(visitorName, gameData, session);
         }
     }
 
-    private void checkWhiteUsername(String visitorName, GameData gameData) throws IOException {
+    private void checkWhiteUsername(String visitorName, GameData gameData, Session session) throws IOException {
         if(!Objects.equals(gameData.getWhiteUsername(), visitorName)){
-            throw new IOException();
+            throw new IOException("Unauthorized");
         }
+
     }
 
-    private void checkBlackUsername(String visitorName, GameData gameData) throws IOException {
+    private void checkBlackUsername(String visitorName, GameData gameData, Session session) throws IOException {
         if(!Objects.equals(gameData.getBlackUsername(), visitorName)){
-            throw new IOException();
+            throw new IOException("Unauthorized");
         }
     }
 

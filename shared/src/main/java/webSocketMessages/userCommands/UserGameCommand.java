@@ -20,7 +20,7 @@ public class UserGameCommand {
         this.authToken = authToken;
         this.commandType = type;
         this.gameID = gameID;
-        this.color = color;
+        this.playerColor = color;
 
     }
 
@@ -32,10 +32,10 @@ public class UserGameCommand {
         RESIGN
     }
 
-    private final ChessGame.TeamColor color;
+    private final ChessGame.TeamColor playerColor;
 
     public ChessGame.TeamColor getColor() {
-        return color;
+        return playerColor;
     }
 
     public int getGameID() {
