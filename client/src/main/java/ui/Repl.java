@@ -45,8 +45,6 @@ public class Repl implements NotificationHandler {
             }
             if (state == State.SIGNEDIN){
                 postClient = new PostLoginClient(serverURL, preClient.getAuth());
-            } else if (state == State.INGAME){
-                gameplayClient = new GameplayClient(serverURL, this, postClient.getCurrentGame(), postClient.getVisitorColor(), postClient.authToken, postClient.trueGameID);
             }
         }
 
@@ -79,6 +77,11 @@ public class Repl implements NotificationHandler {
 
         if (Objects.equals(result, "You left the game")){
             state = State.SIGNEDIN;
+        }
+
+        if (Objects.equals(result, "Join Game Successful")){
+            state = State.INGAME;
+            gameplayClient = new GameplayClient(serverURL, this, postClient.getCurrentGame(), postClient.getVisitorColor(), postClient.authToken, postClient.trueGameID);
         }
 
         return result;

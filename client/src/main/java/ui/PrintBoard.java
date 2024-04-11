@@ -109,17 +109,17 @@ public class PrintBoard {
         int sideHead = 1;
         int i = 1;
 
-        boolean white = false;
+        boolean black = false;
         if (Objects.equals(visitorColor, "white")){
              sideHead = 8;
              i = -1;
-             white = true;
+             black = true;
         }
 
         if (Objects.equals(visitorColor, "black")) {
             for (int boardRow = 1; boardRow <= BOARD_SIZE_IN_SQUARES; ++boardRow) {
                 setTextWhite(out);
-                drawRowOfSquares(out, boardRow, sideHead, white);
+                drawRowOfSquares(out, boardRow, sideHead, black);
                 out.println();
                 sideHead = sideHead + i;
 
@@ -130,7 +130,7 @@ public class PrintBoard {
         } else {
             for (int boardRow = 8; boardRow > 0; --boardRow) {
                 setTextWhite(out);
-                drawRowOfSquares(out, boardRow, sideHead, white);
+                drawRowOfSquares(out, boardRow, sideHead, black);
                 out.println();
                 sideHead = sideHead + i;
 

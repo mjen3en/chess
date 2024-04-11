@@ -111,6 +111,7 @@ public class ChessGame {
             board.addPiece(move.getEndPosition(), thisPiece);
             board.movePiece(move.getStartPosition());
             addPieceMap(move.getEndPosition(), board.getPiece(move.getEndPosition()));
+            deletePieceMap(move.getStartPosition(), board.getPiece(move.getEndPosition()));
             if (turn == TeamColor.WHITE){
                 turn = TeamColor.BLACK;
             } else {

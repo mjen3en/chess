@@ -23,7 +23,7 @@ public class WebSocketFacade extends Endpoint {
     private final Session session;
     NotificationHandler notificationHandler;
 
-    public ChessGame currentGame;
+    static public ChessGame currentGame;
 
     String playerColor;
 
@@ -130,10 +130,10 @@ public class WebSocketFacade extends Endpoint {
 
     public void makeMove(ChessMove move) throws ResponseException {
         //check turns
-        ChessGame.TeamColor turn = currentGame.getTeamTurn();
-        if (turn != color){
-            throw new ResponseException(500, "not authorized to act now");
-        }
+//        ChessGame.TeamColor turn = currentGame.getTeamTurn();
+//        if (turn != color){
+//            throw new ResponseException(500, "not authorized to act now");
+//        }
 
         //check move color
         ChessGame.TeamColor pieceColor = currentGame.getBoard().getPiece(move.getStartPosition()).getTeamColor();

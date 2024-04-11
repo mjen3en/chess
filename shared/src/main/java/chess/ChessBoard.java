@@ -99,6 +99,12 @@ public class ChessBoard {
         }
     }
 
+    public void refreshPieceMaps(){
+        ChessGame.blackPieces.clear();
+        ChessGame.whitePieces.clear();
+        populatePieceMaps();
+    }
+
 
     @Override
     public boolean equals(Object o) {

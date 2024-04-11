@@ -51,7 +51,9 @@ public class WebsocketHandler {
             throw new InvalidMoveException("Can't make move without opponent");
         }
 
+        game.getBoard().refreshPieceMaps();
         game.makeMove(action.getMove());
+
 
         //updateGame
         GameData updatedGame = new GameData(data.getGameID(), data.getWhiteUsername(), data.getBlackUsername(), data.getGameName(), game);
