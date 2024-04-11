@@ -14,7 +14,7 @@ import java.util.Objects;
 public class ServerMessage {
     ServerMessageType serverMessageType;
 
-    String serverMessage;
+    String message;
 
     public enum ServerMessageType {
         LOAD_GAME,
@@ -24,7 +24,7 @@ public class ServerMessage {
 
     public ServerMessage(ServerMessageType type, String message) {
         this.serverMessageType = type;
-        this.serverMessage = message;
+        this.message = message;
     }
 
     public ServerMessageType getServerMessageType() {
@@ -42,7 +42,7 @@ public class ServerMessage {
     }
 
     public String message() {
-        return serverMessage;
+        return message;
     }
 
     public String toString() {

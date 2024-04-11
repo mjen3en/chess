@@ -30,16 +30,62 @@ public class WebsocketHandler {
             switch (action.getCommandType()) {
                 // implement user commands
                 case JOIN_PLAYER -> joinGame(action, session);
-                //case JOIN_OBSERVER ->
+                case JOIN_OBSERVER -> observe(action, session);
                 case MAKE_MOVE -> makeMove(action, session);
                 case LEAVE -> leaveGame(action, session);
-                // resign
+                case RESIGN -> resign(action,session);
             }
         } catch(Exception ex){
             var errorMessage = new ErrorMessage("ERROR" + ex.getMessage());
             session.getRemote().sendString(new Gson().toJson(errorMessage));
 
+
+
         }
+
+    }
+
+    private void resign(UserGameCommand action, Session session) throws DataAccessException, IOException, InvalidMoveException {
+        Integer gameID = action.getGameID();
+        String visitorName = getUsername(action);
+        var message = String.format("%s has resigned", visitorName);
+
+
+
+        GameDAO gDAO = new MySQLGameDAO();
+        GameData data = gDAO.getGame(gameID);
+        ChessGame game = data.getGame();
+        //verify game not over
+        verifyGameNotOver(data);
+        //verify not observer
+        verifyNotObserver(visitorName, data);
+
+        //set game to over and update
+        game.setGameOver(true);
+        GameData updatedGame = new GameData(data.getGameID(), data.getWhiteUsername(), data.getBlackUsername(), data.getGameName(), game);
+        gDAO.updateGame(updatedGame);
+
+        var notification = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION, message);
+        connections.broadcast("", notification, gameID);
+    }
+
+    private void observe(UserGameCommand action, Session session) throws DataAccessException, IOException {
+        String visitorName = getUsername(action);
+        //check authToken
+        checkAuth(action.getAuthString(), session);
+
+        connections.add(visitorName, session, action.getGameID());
+        var message = String.format("%s is observing the game", visitorName);
+        var loadNotification = new LoadGameMessage(getGame(action.getGameID()));
+
+        //LOAD_GAME
+        //connections.broadcast("", loadNotification);
+        //session.getRemote().sendString(loadNotification.toString());
+        connections.messageForYou(visitorName, loadNotification);
+
+        // notify other players/observers
+        var notification = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION, message);
+        connections.broadcast(visitorName, notification, action.getGameID());
 
     }
 
@@ -69,6 +115,15 @@ public class WebsocketHandler {
         ChessGame game = data.getGame();
         ChessPiece piece = game.getBoard().getPiece(move.getStartPosition());
 
+        //check not opponent piece
+        verifyTeamPiece(username, piece, data, session);
+
+        //check not observer
+        verifyNotObserver(username, data);
+
+        //check game not over
+        verifyGameNotOver(data);
+
         //check opponent
         if (data.getWhiteUsername() == null || data.getBlackUsername() == null){
             var errorMessage = new ErrorMessage("ERROR: Can't move without opponent");
@@ -85,14 +140,23 @@ public class WebsocketHandler {
 
         //send load game
         var loadGameMessage = new LoadGameMessage(updatedGame.getGame());
-        connections.broadcast("", loadGameMessage);
+        connections.broadcast("", loadGameMessage, gameID);
 
         //send notification
         String start = move.getStartPosition().toString();
         String end = move.getEndPosition().toString();
         String message = String.format("%1s moved %2s from %3s to %4s", username, piece.toString(), start, end);
         var notification = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION, message);
-        connections.broadcast("", notification);
+        connections.broadcast(username, notification, gameID);
+
+    }
+
+    private void verifyTeamPiece(String username, ChessPiece piece, GameData data, Session session) throws IOException {
+        ChessGame.TeamColor color = piece.getTeamColor();
+        switch(color){
+            case BLACK -> checkBlackUsername(username, data, session);
+            case WHITE -> checkWhiteUsername(username, data, session);
+        }
 
     }
 
@@ -114,7 +178,8 @@ public class WebsocketHandler {
         //send notification
         var message = String.format("%s has left the game", toDelete);
         var notification = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION, message);
-        connections.broadcast(toDelete, notification);
+        connections.broadcast(toDelete, notification, action.getGameID());
+        connections.remove(toDelete);
 
 
     }
@@ -123,26 +188,21 @@ public class WebsocketHandler {
         String visitorName = getUsername(action);
         //check authToken
         checkAuth(action.getAuthString(), session);
-        //check joined
         String message = String.format("%s has entered the game", visitorName);
-        //if observing
-        if (action.getColor() == null){
-            connections.add(visitorName, session);
-            message = String.format("%s is observing the game", visitorName);
-        } else {
 
-            verifyJoined(visitorName, action.getGameID(), action.getColor(), session);
-            connections.add(visitorName, session);
-        }
-
+        //check joined
+        verifyJoined(visitorName, action.getGameID(), action.getColor(), session);
+        connections.add(visitorName, session, action.getGameID());
         //send LOAD_GAME thing
-        var loadNotification = new LoadGameMessage(getGame(action.getGameID()));
+        var loadGameMessage = new LoadGameMessage(getGame(action.getGameID()));
         //loadNotification.setGame(getGame(action.getGameID()));
-        connections.broadcast("", loadNotification);
+        //connections.broadcast("", loadNotification);
+        //session.getRemote().sendString(loadGameMessage.toString());
+        connections.messageForYou(visitorName, loadGameMessage);
 
         // notify other players/observers
         var notification = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION, message);
-        connections.broadcast(visitorName, notification);
+        connections.broadcast(visitorName, notification, action.getGameID());
 
     }
 
@@ -199,6 +259,18 @@ public class WebsocketHandler {
         }
         return oldName;
 
+    }
+
+    private void verifyNotObserver(String username, GameData game) throws IOException {
+        if (!Objects.equals(game.getBlackUsername(), username) && !Objects.equals(game.getWhiteUsername(), username)){
+            throw new IOException("Can't move as observer");
+        }
+    }
+
+    private void verifyGameNotOver(GameData game) throws InvalidMoveException {
+        if (game.getGame().isGameOver()){
+            throw new InvalidMoveException("Game is over");
+        }
     }
 
 }

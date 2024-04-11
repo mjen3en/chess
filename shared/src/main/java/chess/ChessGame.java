@@ -13,6 +13,16 @@ public class ChessGame {
     ChessBoard board = new ChessBoard();
     TeamColor turn = TeamColor.WHITE;
 
+    public boolean isGameOver() {
+        return gameOver;
+    }
+
+    public void setGameOver(boolean gameOver) {
+        this.gameOver = gameOver;
+    }
+
+    public boolean gameOver = false;
+
     public static HashMap<ChessPosition, ChessPiece> blackPieces = new HashMap<ChessPosition, ChessPiece>();
     public static HashMap<ChessPosition, ChessPiece> whitePieces = new HashMap<ChessPosition, ChessPiece>();
 

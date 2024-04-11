@@ -700,7 +700,6 @@ public class WebSocketTests {
         Assertions.assertNotNull(messages.get(0).message, "Bobs NOTIFICATION message did not contain a message");
     }
 
-
     private void assertErrorMessage(List<TestModels.TestMessage> messages) {
         Assertions.assertEquals(1, messages.size(), "Expected 1 message, got " + messages.size());
         Assertions.assertEquals(TestModels.TestServerMessageType.ERROR, messages.get(0).serverMessageType,

@@ -47,6 +47,7 @@ public class WebSocketFacade extends Endpoint {
 
 
             WebSocketContainer container = ContainerProvider.getWebSocketContainer();
+            container.setDefaultMaxSessionIdleTimeout(5 * 60 * 1000);
             this.session = container.connectToServer(this, socketURI);
 
             //set message handler

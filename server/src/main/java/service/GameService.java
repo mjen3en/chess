@@ -101,12 +101,12 @@ public class GameService {
     }
 
     private void setColor(JoinGameRequest request, GameData updatedGame, String username) throws DataAccessException{
-        if (Objects.equals(request.playerColor(), "white")) {
+        if (Objects.equals(request.playerColor(), "white") || Objects.equals(request.playerColor(), "WHITE") || Objects.equals(request.playerColor(), "White")) {
             if (!(Objects.equals(updatedGame.getWhiteUsername(),null))){
                 throw new DataAccessException("Error: already taken");
             }
             updatedGame.setWhiteUsername(username);
-        } else if (Objects.equals(request.playerColor(), "black")){
+        } else if (Objects.equals(request.playerColor(), "black") || Objects.equals(request.playerColor(), "BLACK") || Objects.equals(request.playerColor(), "Black")){
             if (!(Objects.equals(updatedGame.getBlackUsername(),null))){
                 throw new DataAccessException("Error: already taken");
             }
