@@ -79,7 +79,7 @@ public class Repl implements NotificationHandler {
             state = State.SIGNEDIN;
         }
 
-        if (Objects.equals(result, "Join Game Successful")){
+        if (Objects.equals(result, "Join Game Successful") || Objects.equals(result, "Now Observing Game")){
             state = State.INGAME;
             gameplayClient = new GameplayClient(serverURL, this, postClient.getCurrentGame(), postClient.getVisitorColor(), postClient.authToken, postClient.trueGameID);
         }

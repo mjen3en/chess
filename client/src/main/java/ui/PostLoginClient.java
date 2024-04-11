@@ -55,6 +55,8 @@ public class PostLoginClient implements Client{
             currentGame = pair.getFirst();
             trueGameID = pair.getSecond();
 
+            //join with websocket
+
         } else {
             throw new ResponseException(400, "<GAMEID>");
         }

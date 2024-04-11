@@ -37,6 +37,10 @@ public class ServerFacade {
         JoinGameResult response = this.makeRequest("PUT", path, request, JoinGameResult.class, authToken);
         ChessGame currentGame = response.game();
 
+        if (playerColor == null){
+            return new Pair<>(currentGame, trueId);
+        }
+
         //join with websocket
         WebSocketFacade ws = new WebSocketFacade(serverUrl, authToken, playerColor, trueId);
         ws.joinGame();

@@ -53,7 +53,7 @@ public class PieceMovesCalculator {
         var validMoves = new HashSet<ChessMove>();
         int rowAdjusted = myPosition.getRow() + 1;
         int colAdjusted = myPosition.getColumn() + 1;
-        if (!(rowAdjusted == 8 || rowAdjusted == 1)) {
+        if (!(rowAdjusted + f > 8 || rowAdjusted + f < 1)) {
             ChessPosition newPositionUp = new ChessPosition(rowAdjusted + f, colAdjusted + 1);
             ChessPosition newPositionCen = new ChessPosition(rowAdjusted + f, colAdjusted);
             ChessPosition newPositionDown = new ChessPosition(rowAdjusted + f, colAdjusted - 1);

@@ -35,10 +35,6 @@ public class ChessBoard {
      * position
      */
     public ChessPiece getPiece(ChessPosition position) {
-//        if (squares[position.getRow()][position.getColumn()] == null){
-//            System.out.println(position.toString());
-//        }
-
         return squares[position.getRow()][position.getColumn()];
     }
 
