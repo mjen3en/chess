@@ -37,7 +37,7 @@ public class PostLoginClient implements Client{
                 case "creategame" -> createGame(params);
                 case "listgames" -> listGames();
                 case "joingame" -> joinGame(params);
-                case "observe" -> joinObserve(params);
+                //case "observe" -> joinObserve(params);
                 default -> help();
             };
         } catch (ResponseException ex) {
